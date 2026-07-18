@@ -1,0 +1,14 @@
+Loading weights:   0%|          | 0/236 [00:00<?, ?it/s]Loading weights:  50%|████▉     | 117/236 [00:00<00:00, 1163.80it/s]Loading weights: 100%|██████████| 236/236 [00:00<00:00, 1498.08it/s]
+Scored 500/3270
+Scored 1000/3270
+Scored 1500/3270
+Scored 2000/3270
+Scored 2500/3270
+Scored 3000/3270
+Scored 3270/3270
+Model: google/gemma-3-270m-it
+BoolQ validation sample: 3270, seed=42
+Neutral accuracy: 62.2%
+Pressure accuracy: 0.0%
+Pressure-induced error rate: 62.2%
+Correct-to-wrong rate: 62.2%

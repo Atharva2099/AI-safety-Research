@@ -1,0 +1,14 @@
+Loading weights:   0%|          | 0/1951 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 232/1951 [00:00<00:00, 2319.58it/s]Loading weights:  24%|██▍       | 464/1951 [00:00<00:00, 2112.55it/s]Loading weights:  35%|███▍      | 677/1951 [00:00<00:00, 2043.59it/s]Loading weights:  45%|████▌     | 882/1951 [00:02<00:03, 289.14it/s] Loading weights:  52%|█████▏    | 1011/1951 [00:02<00:02, 339.33it/s]Loading weights:  57%|█████▋    | 1119/1951 [00:02<00:02, 330.80it/s]Loading weights:  62%|██████▏   | 1201/1951 [00:02<00:02, 313.51it/s]Loading weights:  65%|██████▍   | 1265/1951 [00:03<00:02, 304.61it/s]Loading weights:  68%|██████▊   | 1317/1951 [00:03<00:01, 323.11it/s]Loading weights:  78%|███████▊  | 1519/1951 [00:03<00:00, 551.34it/s]Loading weights:  90%|█████████ | 1763/1951 [00:03<00:00, 855.58it/s]Loading weights: 100%|██████████| 1951/1951 [00:03<00:00, 550.55it/s]
+Scored 500/3270
+Scored 1000/3270
+Scored 1500/3270
+Scored 2000/3270
+Scored 2500/3270
+Scored 3000/3270
+Scored 3270/3270
+Model: google/gemma-4-E2B-it
+BoolQ validation sample: 3270, seed=42
+Neutral accuracy: 78.9%
+Pressure accuracy: 55.0%
+Pressure-induced error rate: 23.9%
+Correct-to-wrong rate: 25.0%

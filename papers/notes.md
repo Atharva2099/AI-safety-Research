@@ -1,5 +1,7 @@
 # Reading notes
 
+Last updated: 2026-07-18
+
 One block per paper, in reading order. Separator: `---`.
 
 Each block: PDF link, vocab pre-check (for foundational papers), per-section notes filled in *as* you read, open questions, extension ideas. Don't pre-fill — empty fields are fine until you've read it.

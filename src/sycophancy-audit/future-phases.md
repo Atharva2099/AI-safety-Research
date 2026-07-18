@@ -1,5 +1,7 @@
 # Future Phases
 
+Last updated: 2026-07-18
+
 These are intentionally deferred until Phases 1 to 3 show a reliable behavioral effect.
 
 ## Phase 4: Intervention

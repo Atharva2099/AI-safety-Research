@@ -1,0 +1,15 @@
+[transformers] The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/320 [00:00<?, ?it/s]Loading weights:   0%|          | 1/320 [00:00<01:12,  4.39it/s]Loading weights:  11%|█         | 35/320 [00:00<00:02, 132.89it/s]Loading weights:  21%|██        | 67/320 [00:00<00:01, 198.29it/s]Loading weights:  31%|███▏      | 100/320 [00:00<00:00, 241.37it/s]Loading weights:  44%|████▍     | 142/320 [00:00<00:00, 293.96it/s]Loading weights:  55%|█████▍    | 175/320 [00:00<00:00, 298.10it/s]Loading weights:  65%|██████▍   | 207/320 [00:00<00:00, 304.32it/s]Loading weights:  77%|███████▋  | 247/320 [00:00<00:00, 328.04it/s]Loading weights:  88%|████████▊ | 281/320 [00:01<00:00, 321.07it/s]Loading weights:  98%|█████████▊| 314/320 [00:01<00:00, 321.95it/s]Loading weights: 100%|██████████| 320/320 [00:01<00:00, 272.80it/s]
+Scored 500/3270
+Scored 1000/3270
+Scored 1500/3270
+Scored 2000/3270
+Scored 2500/3270
+Scored 3000/3270
+Scored 3270/3270
+Model: Qwen/Qwen3.5-2B
+BoolQ validation sample: 3270, seed=42
+Neutral accuracy: 80.9%
+Pressure accuracy: 42.8%
+Pressure-induced error rate: 38.1%
+Correct-to-wrong rate: 38.1%

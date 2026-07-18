@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Last updated: 2026-07-18
+
 Instructions for AI coding agents (Claude Code, Cursor, etc.) working in this repo. **Read this fully before doing anything.** The rules here override your defaults.
 
 ---
@@ -63,6 +65,31 @@ Notes are for the owner. Code is for the owner to run and tweak. Do not:
 ### Don't make new markdown files unprompted
 
 `docs/` and `papers/<slug>/notes.md` exist because the owner asked. Don't add `STRATEGY.md`, `RESEARCH_PLAN.md`, `IDEAS.md`, etc. without being asked. If you have an idea, suggest it in chat; let the owner decide if it deserves a file.
+
+### Evidence and reporting
+
+- All new or modified Markdown documentation must include `Last updated: YYYY-MM-DD` under its title.
+- Use neutral, factual language. State the dataset, prompt, metric, sample size, and observed value before interpretation.
+- Do not claim a model, dataset, or technique is good, bad, broken, unsafe, or a breakthrough unless the evidence directly supports that narrow claim.
+- Separate measured results from hypotheses, limitations, and next questions.
+- Keep a dated entry in `docs/bugs-squashed.md` for each discovered evaluation, environment, or reproducibility issue. Record the issue, impact, fix, verification, and gain. Open issues must be labeled as open rather than described as fixed.
+
+### Major runs
+
+Before a substantial evaluation or training run, share a short pre-run card with the owner and obtain their go-ahead. It must state:
+
+- the metric definition and all saved fields;
+- dataset, exact sample or split, counterbalancing/control conditions, and model group;
+- what the run can and cannot establish;
+- expected runtime/resource use and known compatibility risks.
+
+For long detached runs, do not poll the remote machine unless the owner asks. Report terminal errors or completed results when they are observed. Never present a partial or aborted run as a final result.
+
+### Keep code small
+
+- Prefer the smallest script that makes the measurement auditable.
+- Do not add production-style abstraction, classes, helper modules, or extensive unit tests unless a concrete reuse or correctness need requires them.
+- Validate the measurement with a small smoke test before a major run, then document the check succinctly.
 
 ---
 

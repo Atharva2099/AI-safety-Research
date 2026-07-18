@@ -1,5 +1,7 @@
 # Phase 3: Evidence-Grounded Self-Assessment
 
+Last updated: 2026-07-18
+
 ## Question
 
 When qualifications and requirements are held fixed, do positive or negative self-assessments shift the model's verdict about job fit, PhD readiness, or project feasibility?

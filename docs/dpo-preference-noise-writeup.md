@@ -1,5 +1,7 @@
 # DPO Under Noisy Preference Labels
 
+Last updated: 2026-07-18
+
 ## Question
 
 How does randomly flipping a fraction of preference labels affect Direct Preference Optimization (DPO) on a small instruction-tuned language model?

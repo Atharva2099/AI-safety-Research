@@ -1,0 +1,16 @@
+[transformers] Unrecognized keys in `rope_parameters` for 'rope_type'='dynamic': {'mscale', 'alpha', 'beta_fast', 'mscale_all_dim', 'beta_slow'}
+[transformers] Unrecognized keys in `rope_parameters` for 'rope_type'='dynamic': {'mscale', 'alpha', 'beta_fast', 'mscale_all_dim', 'beta_slow'}
+Loading weights:   0%|          | 0/266 [00:00<?, ?it/s]Loading weights:   0%|          | 1/266 [00:01<05:31,  1.25s/it]Loading weights:   2%|▏         | 5/266 [00:01<00:55,  4.73it/s]Loading weights:   5%|▌         | 14/266 [00:01<00:16, 15.18it/s]Loading weights:   8%|▊         | 20/266 [00:01<00:11, 21.28it/s]Loading weights:  10%|▉         | 26/266 [00:01<00:08, 26.91it/s]Loading weights:  12%|█▏        | 31/266 [00:01<00:07, 31.13it/s]Loading weights:  14%|█▍        | 38/266 [00:01<00:06, 36.43it/s]Loading weights:  18%|█▊        | 47/266 [00:02<00:05, 42.95it/s]Loading weights:  21%|██        | 55/266 [00:02<00:04, 48.83it/s]Loading weights:  23%|██▎       | 61/266 [00:02<00:04, 49.57it/s]Loading weights:  26%|██▌       | 69/266 [00:02<00:03, 55.28it/s]Loading weights:  28%|██▊       | 75/266 [00:02<00:03, 53.61it/s]Loading weights:  30%|███       | 81/266 [00:02<00:03, 52.87it/s]Loading weights:  33%|███▎      | 88/266 [00:02<00:03, 54.90it/s]Loading weights:  35%|███▌      | 94/266 [00:02<00:03, 53.32it/s]Loading weights:  38%|███▊      | 102/266 [00:03<00:03, 52.54it/s]Loading weights:  41%|████▏     | 110/266 [00:03<00:02, 56.66it/s]Loading weights:  44%|████▎     | 116/266 [00:03<00:02, 55.10it/s]Loading weights:  47%|████▋     | 124/266 [00:03<00:02, 59.91it/s]Loading weights:  49%|████▉     | 131/266 [00:03<00:02, 56.43it/s]Loading weights:  52%|█████▏    | 137/266 [00:03<00:02, 52.09it/s]Loading weights:  55%|█████▍    | 146/266 [00:03<00:02, 59.70it/s]Loading weights:  58%|█████▊    | 153/266 [00:03<00:01, 60.59it/s]Loading weights:  60%|██████    | 160/266 [00:04<00:01, 56.96it/s]Loading weights:  63%|██████▎   | 168/266 [00:04<00:01, 55.19it/s]Loading weights:  66%|██████▌   | 176/266 [00:04<00:01, 58.33it/s]Loading weights:  68%|██████▊   | 182/266 [00:04<00:01, 57.44it/s]Loading weights:  71%|███████▏  | 190/266 [00:04<00:01, 61.36it/s]Loading weights:  74%|███████▍  | 197/266 [00:04<00:01, 56.74it/s]Loading weights:  76%|███████▋  | 203/266 [00:04<00:01, 52.68it/s]Loading weights:  80%|███████▉  | 212/266 [00:04<00:00, 60.41it/s]Loading weights:  82%|████████▏ | 219/266 [00:05<00:00, 56.54it/s]Loading weights:  85%|████████▍ | 225/266 [00:05<00:00, 52.85it/s]Loading weights:  88%|████████▊ | 234/266 [00:05<00:00, 60.37it/s]Loading weights:  91%|█████████ | 241/266 [00:05<00:00, 56.83it/s]Loading weights:  93%|█████████▎| 247/266 [00:05<00:00, 52.36it/s]Loading weights:  96%|█████████▌| 256/266 [00:05<00:00, 59.97it/s]Loading weights:  99%|█████████▉| 263/266 [00:05<00:00, 56.85it/s]Loading weights: 100%|██████████| 266/266 [00:05<00:00, 44.95it/s]
+Scored 500/3270
+Scored 1000/3270
+Scored 1500/3270
+Scored 2000/3270
+Scored 2500/3270
+Scored 3000/3270
+Scored 3270/3270
+Model: tencent/Hunyuan-0.5B-Instruct
+BoolQ validation sample: 3270, seed=42
+Neutral accuracy: 62.1%
+Pressure accuracy: 0.1%
+Pressure-induced error rate: 62.1%
+Correct-to-wrong rate: 62.1%
