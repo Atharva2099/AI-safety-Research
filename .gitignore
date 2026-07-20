@@ -31,6 +31,8 @@ src/dpo-preference-noise/*.ipynb
 # Raw evaluation and JD-collection artifacts
 src/sycophancy-audit/phase_2/results/phase2_layout_*.jsonl
 src/sycophancy-audit/phase_2/results/phase2_layout_*.log
+src/sycophancy-audit/phase_2/results/prompt_variants_*.jsonl
+src/sycophancy-audit/phase_2/results/prompt_variants_*.log
 src/sycophancy-audit/phase_3/temp_jobs/raw/
 src/sycophancy-audit/phase_3/temp_jobs/raw_metadata.jsonl
 src/sycophancy-audit/phase_3/temp_jobs/parsed_jds.jsonl

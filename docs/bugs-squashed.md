@@ -1,6 +1,6 @@
 # Bugs Squashed
 
-Last updated: 2026-07-18
+Last updated: 2026-07-20
 
 ## 2026-07-18 - Duplicate Phase 1 benchmark file
 
@@ -175,3 +175,39 @@ Last updated: 2026-07-18
 **Verification:** All 50 records pass checks that candidate evidence excludes voluntary-identification, federal-contractor, and OFCCP text. The largest final section counts are 21 responsibilities, 19 required qualifications, and 12 preferred qualifications after manual outlier review.
 
 **Gain:** Extracted evidence remains traceable to job-content sections rather than compliance footers or downstream application text.
+
+## 2026-07-20 - L4 capacity unavailable for the first prompt test
+
+**Issue:** Starting `atharva-experiments-l4-b` in `us-central1-b` failed with `ZONE_RESOURCE_POOL_EXHAUSTED` for one `nvidia-l4` on `g2-standard-4`.
+
+**Impact:** The planned factual-pressure prompt test did not start. No model outputs or metrics were produced.
+
+**Resolution:** A later GUI start request succeeded after capacity changed. No duplicate CLI start command, migration, or configuration change was attempted.
+
+**Verification:** The completed start operation reports the capacity error; follow-up inspection confirmed the VM is `TERMINATED` and the boot disk is `READY`.
+
+**Gain:** The failed request was recorded without treating the stopped VM as broken. Future start attempts must still inspect live capacity and recent operations first.
+
+## 2026-07-20 - Initial prompt-variant sample conditioned on prior pressure outcome
+
+**Issue:** The first 100-item prompt-variant run selected 50 items that previously flipped under the original confirmation prompt and 50 that previously remained correct under it.
+
+**Impact:** The selection rule uses the original confirmation outcome. It can bias the result for that wording and cannot cleanly compare all five prompt versions.
+
+**Fix:** Select the next 100-item sample only from examples that were correct under the neutral Phase 2 prompt. Do not use any prior pressure outcome in the selection rule. Also replace the deprecated `torch_dtype` argument in the new evaluator with `dtype`.
+
+**Verification:** The corrected run must save `selection: {"neutral_correct": 100}` in metadata and complete without the deprecation warning.
+
+**Gain:** Each pressure wording is measured on the same sample selected independently of prior pressure behavior.
+
+## 2026-07-20 - Remote evaluator lacked the source selection file
+
+**Issue:** The VM contained the earlier prompt-variant outputs but not the Phase 2 JSONL file needed to select the corrected neutral-only sample.
+
+**Impact:** The corrected evaluation could not start until the source result was transferred to the VM. No partial evaluation output was treated as a completed run.
+
+**Fix:** Transferred `phase2_layout_google_gemma-4-E2B-it_boolq_validation_seed42.jsonl` to the VM before rerunning the evaluator.
+
+**Verification:** A two-item smoke run completed and recorded `selection: {"neutral_correct": 2}` before the 100-item and 300-item runs.
+
+**Gain:** The corrected runs used a source file that was present and independently checked on the VM.
