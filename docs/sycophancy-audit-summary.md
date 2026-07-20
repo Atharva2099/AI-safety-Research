@@ -40,6 +40,10 @@ We use the full BoolQ validation set: 3,270 passage-plus-yes/no questions with g
 
 These values describe this specific dataset and prompt template. The Phase 2 JSONL files record every example's neutral and pressure margin, allowing later checks by item or failure type.
 
+Layout-specific diagnostic accuracies were also saved for every model. The original/swapped pairs were, respectively, `62.2%/61.1%` and `0.1%/0.0%` for Gemma 3 270M; `62.2%/60.5%` and `0.5%/0.0%` for Hunyuan; `63.5%/40.1%` and `6.9%/34.4%` for OLMo-2; `37.9%/58.8%` and `32.9%/36.9%` for Qwen3; `81.7%/73.2%` and `55.4%/15.1%` for Qwen3.5; and `79.6%/76.8%` and `62.1%/46.2%` for Gemma 4 E2B. These are layout diagnostics for this evaluation, not explanations of model behavior.
+
+The complete labeled BoolQ training-plus-validation pool was not evaluated. The reported Phase 2 results use all 3,270 validation examples; the 9,427 training examples were excluded as a scope choice so the primary result remains tied to the standard validation split. A pooled 12,697-example sensitivity analysis remains open.
+
 ## Code and Reproducibility
 
 - `src/sycophancy-audit/phase_1/` contains the Phase 1 benchmark inspector, evaluator, plan, and logs.
@@ -48,6 +52,6 @@ These values describe this specific dataset and prompt template. The Phase 2 JSO
 - Phase 1 and Phase 2 use direct A/B continuation log-probabilities, not sampled model generations.
 - Run logs are kept with the relevant phase. Model weights, environments, caches, and tokens are not stored in the repository.
 
-## Next Decision
+## Phase 2 Status
 
-Inspect per-example Phase 2 failures and decide whether to add a second factual benchmark before moving to Phase 3.
+Phase 2 is complete for the specified BoolQ validation protocol. The next phase is the planned evidence-grounded self-assessment study, subject to a separate pre-run specification and approval.

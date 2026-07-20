@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Last updated: 2026-07-18
+Last updated: 2026-07-20
 
 Instructions for AI coding agents (Claude Code, Cursor, etc.) working in this repo. **Read this fully before doing anything.** The rules here override your defaults.
 
@@ -50,6 +50,14 @@ The default mode in this repo is **collaborative learning**, not autonomous exec
 ### When the owner asks a conceptual question
 
 Answer it directly and well. Use the math when the math is the point. Connect it to something they already know from regular ML (their background is solid there). Don't water it down. Don't pad with disclaimers.
+
+### Use plain, grounded language
+
+- Prefer simple, concrete wording over research-sounding labels.
+- Explain what was changed, measured, or observed before naming a technique.
+- Do not invent terms or use jargon as a substitute for an explanation.
+- Separate facts from interpretation. Say what the data shows, then state any uncertainty plainly.
+- Example: say "test which sentence causes the answer to change," not "run a prompt-factor ablation."
 
 ### When in doubt about scope
 
@@ -199,6 +207,23 @@ Surfaced ideas the owner may pick up later. Agents: don't act on these unprompte
   - Tell the owner to use `/ds:dash` and `/ds:queue` to monitor.
 - **Citations in notes:** link to `papers/<slug>/notes.md` instead of re-pasting the abstract.
 
+### Google Cloud Workspace
+
+`gcp-workspace/` is local-only infrastructure state and must not be committed. Before any Google Cloud, Compute Engine, GPU, storage, backup, migration, startup, shutdown, or other infrastructure operation:
+
+1. Read `gcp-workspace/SKILL.md`.
+2. Read `gcp-workspace/infrastructure_manifest.json`.
+3. Read `gcp-workspace/workspace_state.md`.
+4. Read the most recent entries in `gcp-workspace/workspace_log.jsonl`.
+5. Read open/recent entries in `gcp-workspace/workspace_sessions.csv` and `gcp-workspace/workspace_cost_ledger.csv`.
+6. Compare the recorded state with live GCP resources before making changes.
+
+`gcp-workspace/SKILL.md` is mandatory for infrastructure work. It governs discovery, resource reuse, explicit approval, backups, migrations, startup, shutdown, cleanup, security, and cost tracking.
+
+Do not create a VM before checking existing resources. Do not run multiple GPU VMs without explicit approval. Do not delete or overwrite cloud resources without explicit approval. Do not expose credentials, SSH keys, `.env` contents, or secret files. Do not repeat timed-out lifecycle commands blindly. Do not leave GPU VMs running after work is complete.
+
+After every verified infrastructure operation, update `gcp-workspace/workspace_state.md`, append one valid JSON record to `gcp-workspace/workspace_log.jsonl`, update applicable session/cost ledgers, and report running resources plus ongoing cost drivers.
+
 ---
 
 ## 7. Quick decision rules
@@ -224,3 +249,4 @@ Surfaced ideas the owner may pick up later. Agents: don't act on these unprompte
 4. End goal is **competence + cold emails**, not a published artifact.
 5. Don't create files unprompted. Don't pad with polish.
 6. Use `uv`. Use the CORAL queue for training. Respect the current roadmap phase.
+7. Read and follow `gcp-workspace/SKILL.md` before any infrastructure action.
