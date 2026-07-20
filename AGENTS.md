@@ -77,6 +77,8 @@ Notes are for the owner. Code is for the owner to run and tweak. Do not:
 ### Evidence and reporting
 
 - All new or modified Markdown documentation must include `Last updated: YYYY-MM-DD` under its title.
+- Never commit PII or sensitive operational data anywhere in the repository. This includes names, email addresses, phone numbers, IP addresses, API keys, access tokens, passwords, private keys, service-account details, cloud project/account identifiers, VM or storage identifiers, private URLs, and raw records containing personal data.
+- Apply the same rule to `docs/bugs-squashed.md`: describe infrastructure or reproducibility failures with redacted resource names and identifiers unless the owner explicitly approves a specific identifier. Keep full infrastructure records only in the ignored `gcp-workspace/` directory.
 - Use neutral, factual language. State the dataset, prompt, metric, sample size, and observed value before interpretation.
 - Do not claim a model, dataset, or technique is good, bad, broken, unsafe, or a breakthrough unless the evidence directly supports that narrow claim.
 - Separate measured results from hypotheses, limitations, and next questions.

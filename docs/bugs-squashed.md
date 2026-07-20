@@ -178,7 +178,7 @@ Last updated: 2026-07-20
 
 ## 2026-07-20 - L4 capacity unavailable for the first prompt test
 
-**Issue:** Starting `atharva-experiments-l4-b` in `us-central1-b` failed with `ZONE_RESOURCE_POOL_EXHAUSTED` for one `nvidia-l4` on `g2-standard-4`.
+**Issue:** Starting the primary GPU VM in its configured zone failed with `ZONE_RESOURCE_POOL_EXHAUSTED` for one `nvidia-l4` on `g2-standard-4`.
 
 **Impact:** The planned factual-pressure prompt test did not start. No model outputs or metrics were produced.
 
@@ -214,7 +214,7 @@ Last updated: 2026-07-20
 
 ## 2026-07-20 - L4 capacity unavailable on the retry start
 
-**Issue:** A retry start for `atharva-experiments-l4-b` failed with `ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS` and GPU availability root cause. GCP reported `STOCKOUT` for one `nvidia-l4` on `g2-standard-4` in `us-central1-b`.
+**Issue:** A retry start for the primary GPU VM failed with `ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS` and GPU availability root cause. GCP reported `STOCKOUT` for one `nvidia-l4` on `g2-standard-4` in the configured zone.
 
 **Impact:** The VM remained `TERMINATED`; no GPU or VM compute billing began from this attempt.
 
@@ -226,7 +226,7 @@ Last updated: 2026-07-20
 
 ## 2026-07-20 - L4 capacity unavailable on the second retry start
 
-**Issue:** An explicit second retry start failed with `ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS`. GCP reported `STOCKOUT` for one `nvidia-l4` on `g2-standard-4` in `us-central1-b`.
+**Issue:** An explicit second retry start failed with `ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS`. GCP reported `STOCKOUT` for one `nvidia-l4` on `g2-standard-4` in the configured zone.
 
 **Impact:** The VM remained `TERMINATED`; no GPU or VM compute billing began from this attempt.
 
