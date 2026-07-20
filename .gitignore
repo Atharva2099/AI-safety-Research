@@ -27,3 +27,12 @@ src/dpo-preference-noise/*.ipynb
 
 # Logs can be committed selectively; ignore transient run outputs elsewhere
 *.out
+
+# Raw evaluation and JD-collection artifacts
+src/sycophancy-audit/phase_2/results/phase2_layout_*.jsonl
+src/sycophancy-audit/phase_2/results/phase2_layout_*.log
+src/sycophancy-audit/phase_3/temp_jobs/raw/
+src/sycophancy-audit/phase_3/temp_jobs/raw_metadata.jsonl
+src/sycophancy-audit/phase_3/temp_jobs/parsed_jds.jsonl
+src/sycophancy-audit/phase_3/temp_jobs/pilot_parsed_jds.jsonl
+src/sycophancy-audit/phase_3/temp_jobs/gemini_curation_*.jsonl
