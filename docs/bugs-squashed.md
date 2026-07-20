@@ -211,3 +211,27 @@ Last updated: 2026-07-20
 **Verification:** A two-item smoke run completed and recorded `selection: {"neutral_correct": 2}` before the 100-item and 300-item runs.
 
 **Gain:** The corrected runs used a source file that was present and independently checked on the VM.
+
+## 2026-07-20 - L4 capacity unavailable on the retry start
+
+**Issue:** A retry start for `atharva-experiments-l4-b` failed with `ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS` and GPU availability root cause. GCP reported `STOCKOUT` for one `nvidia-l4` on `g2-standard-4` in `us-central1-b`.
+
+**Impact:** The VM remained `TERMINATED`; no GPU or VM compute billing began from this attempt.
+
+**Fix:** No retry was issued. The failed operation was inspected and the VM and boot disk were verified unchanged.
+
+**Verification:** The completed start operation ended at `2026-07-20T23:00:53.369Z`; live instance state was `TERMINATED` and disk state was `READY`.
+
+**Gain:** The capacity failure is recorded without treating the stopped VM or its disk as missing or damaged.
+
+## 2026-07-20 - L4 capacity unavailable on the second retry start
+
+**Issue:** An explicit second retry start failed with `ZONE_RESOURCE_POOL_EXHAUSTED_WITH_DETAILS`. GCP reported `STOCKOUT` for one `nvidia-l4` on `g2-standard-4` in `us-central1-b`.
+
+**Impact:** The VM remained `TERMINATED`; no GPU or VM compute billing began from this attempt.
+
+**Fix:** No further retry was issued.
+
+**Verification:** The start command failed and a follow-up instance description returned `TERMINATED`.
+
+**Gain:** The retry result and unchanged VM state are recorded without treating the capacity error as a VM or disk failure.
