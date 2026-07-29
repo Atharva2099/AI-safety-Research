@@ -38,3 +38,7 @@ src/sycophancy-audit/phase_3/temp_jobs/raw_metadata.jsonl
 src/sycophancy-audit/phase_3/temp_jobs/parsed_jds.jsonl
 src/sycophancy-audit/phase_3/temp_jobs/pilot_parsed_jds.jsonl
 src/sycophancy-audit/phase_3/temp_jobs/gemini_curation_*.jsonl
+
+# Activation-patching generated output (rebuild in progress)
+src/sycophancy-audit/phase_2/activation_patching/results/
+src/sycophancy-audit/phase_2/activation_patching/*.json

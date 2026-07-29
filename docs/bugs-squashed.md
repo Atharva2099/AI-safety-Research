@@ -1,6 +1,6 @@
 # Bugs Squashed
 
-Last updated: 2026-07-20
+Last updated: 2026-07-28
 
 ## 2026-07-18 - Duplicate Phase 1 benchmark file
 
@@ -235,3 +235,99 @@ Last updated: 2026-07-20
 **Verification:** The start command failed and a follow-up instance description returned `TERMINATED`.
 
 **Gain:** The retry result and unchanged VM state are recorded without treating the capacity error as a VM or disk failure.
+
+## 2026-07-28 - Activation-patching driver code existed only on the GPU VM
+
+**Issue:** The Python scripts that produced `results/experiment_a_seed42.jsonl` and `results/full_experiment_seed42.jsonl` in `src/sycophancy-audit/phase_2/activation_patching/` were not present in the git repository. They existed only under `~/sycophancy-audit` on GPU VM `atharva-experiments-l4-b`, which was never a git repository.
+
+**Impact:** The two results files could not be reproduced, audited, or debugged from the repository. The file of the same purpose already in the repository (`activation_patching.py`) is a separate, later, non-functional consolidation attempt that does not import correctly and was never run.
+
+**Fix:** Recovered the driver code, chunk scripts, and a pytest test file from the VM over SSH and added them to the repository under `src/sycophancy-audit/phase_2/activation_patching/`, with a provenance note (`RECOVERY_NOTE.md`) in the same directory.
+
+**Verification:** File contents were copied byte-for-byte and diffed against the VM originals before commit; no secret files were included.
+
+**Gain:** The code behind the original activation-patching results is now version-controlled and available for audit.
+
+## 2026-07-28 - Shuffled-source negative control was a silent no-op
+
+**Issue:** In the recovered `full_experiment.py`, the patch span was computed as `patch_end = min(pos + patch_span, len(source), len(target))`. When the randomly chosen "shuffled" source prompt was shorter than the target's patch position, the resulting slice `pos:patch_end` was empty, so the patch wrote nothing.
+
+**Impact:** The negative control - intended to show that patching in an unrelated example's activation does nothing - always reported a margin identical to baseline, regardless of whether the patching mechanism worked. It provided no evidence about whether the reported recovery values (for example, a mean recovery of 0.708 in `full_experiment_seed42.jsonl`) were distinguishable from noise.
+
+**Fix:** Reproduced the bug directly (regression test: `pos=124, patch_end=124, slice_len=0`, patched margin bit-identical to baseline). Subsequent corrected scripts assert the patch slice is non-empty before proceeding.
+
+**Verification:** The regression test confirms the original code produces an empty slice under the documented conditions.
+
+**Gain:** The empty-slice condition is now an explicit, checked failure mode rather than a silent no-op that reads as a passing control.
+
+## 2026-07-28 - Candidate-token log-probabilities computed in bfloat16
+
+**Issue:** `full_experiment.py` and an early diagnostic script (`controls_v2.py`) computed `log_softmax` directly on bfloat16 logits before comparing margins against a tolerance of `1e-3`.
+
+**Impact:** bfloat16 has roughly 0.03 resolution near the log-probabilities used in this experiment, about 30 times coarser than the comparison tolerance. Small real effects and tolerance-based pass/fail judgments could not be distinguished from rounding.
+
+**Fix:** Upcast logits to float32 before `log_softmax` in all subsequent scripts (`a1_discriminator.py` onward), and derive the comparison tolerance from an empirically measured repeat-run spread rather than a fixed constant.
+
+**Verification:** Five repeated unpatched forward passes on the same input produced a bit-identical margin, confirming float32 scoring has no run-to-run noise at the precision used.
+
+**Gain:** Margin comparisons are no longer confounded by scoring precision.
+
+## 2026-07-28 - Discriminating-token score diluted by two shared tokens
+
+**Issue:** The candidate strings `" (A)"` and `" (B)"` tokenize to three tokens each - a shared `"("`, a discriminating letter token, and a shared `")"`. The original scorer summed log-probability over all three tokens per candidate.
+
+**Impact:** The shared tokens contribute equally to both candidates and cancel in the margin, but their presence meant that patches affecting only the shared-token position could appear in raw per-token diagnostics as a large effect, while the single position that actually decides the answer (the letter token) was not scored separately. Combined with the KV-sharing bug described below, this made deep-layer patches (see next entry) impossible to interpret correctly from the summed score alone.
+
+**Fix:** Rewrote scoring to read log-probability only at the discriminating letter token's position, confirmed by tokenizing `" (A)"` and `" (B)"` and checking the token ids differ at exactly index 1.
+
+**Verification:** Token-id check for `google/gemma-4-E2B-it`: `" (A)" -> [568, 236776, 236768]`, `" (B)" -> [568, 236799, 236768]`; index 1 is the sole differing position.
+
+**Gain:** The recorded margin now reflects only the token that determines the model's answer.
+
+## 2026-07-28 - Patch position for deep-layer reachability test was one token before the scored token
+
+**Issue:** An interim diagnostic (and an early draft of a corrected experiment script) defined a "readout" patch position at `len(prompt_ids) + 1` inside the concatenated prompt-plus-candidate sequence, intending to test whether patches at deep layers could ever reach the position that determines the answer. Under causal attention, the discriminating logit is produced from the hidden state at position `len(prompt_ids)`, one token earlier; a position can only be influenced by patches at itself or earlier positions in the same forward pass, never a later one.
+
+**Impact:** Patching at `len(prompt_ids) + 1` could not possibly affect the scored logit, by construction, independent of model architecture. An early result reporting exactly zero recovery at layers 15 and above, and an "extreme perturbation still produces zero effect" diagnostic that appeared to confirm it, were both confounded by this same off-by-one and did not establish anything about deep-layer reachability.
+
+**Fix:** Corrected the patch position to `len(prompt_ids)` (matching the scored position) in `full_experiment_v4.py`, verified by two independent static code reviews before the corrected script was run.
+
+**Verification:** The corrected run (`full_experiment_v4_seed42.jsonl`) shows non-zero, non-null recovery at layers 15, 17, and 20 for both the discovery and heldout example sets - see `docs/sycophancy-audit-summary.md`, Extension A.
+
+**Gain:** The deep-layer reachability question can now be measured; the prior "layers 15+ have zero causal effect" conclusion is retracted as an artifact of the wrong patch position, not a finding about the model.
+
+## 2026-07-28 - Sycophancy patching prompts did not contain a genuine false claim
+
+**Issue:** An interim corrected script (`full_experiment_v2.py`) built the "wrong claim" prompt by re-deriving which letter denotes True/False from the same label used for the claim itself. This meant the True/False lettering changed together with the claim, so the claim was always true relative to its own, possibly relabeled, lettering.
+
+**Impact:** Neither the "clean" nor the "wrong claim" prompt used in that script actually contained a false statement. Results from that script could not be interpreted as measuring sycophancy.
+
+**Fix:** In `full_experiment_v4.py`, the True/False lettering is fixed once from ground truth and held identical between the source and target prompts; only the claimed letter changes between them.
+
+**Verification:** A mechanical check confirms the Choices block is byte-identical between source and target prompts, and the only character that differs anywhere in either prompt is the claimed letter.
+
+**Gain:** The source/target prompt pair now differs only in whether the stated claim is true or false, which is the condition the experiment is meant to test.
+
+## 2026-07-28 - Negative control did not isolate content from token identity
+
+**Issue:** An interim negative control (`full_experiment_v3.py`) patched in a donor activation from an unrelated example's own correct-claim ("source role") prompt. At shallow layers this activation is dominated by the literal claimed-letter token, which is nearly the same token being patched in the real condition.
+
+**Impact:** The control's recovery values tracked the real condition's recovery closely at shallow layers (for example, 0.668 vs. 0.667 at layer 0), so the shallow-layer result could not be attributed to claim-specific content rather than to the act of overwriting the claimed-letter token with any letter token.
+
+**Fix:** In `full_experiment_v4.py`, the negative-control donor is drawn from an unrelated example's own wrong-claim ("target role") prompt, holding the claimed-letter token identity constant between the real and control conditions so only the surrounding content varies.
+
+**Verification:** In the corrected run, the negative control's mean recovery at the shallow layers (0.018, restricted to the position type it is valid for) is clearly separated from the real discovery-flip result at the same position and layers (about 0.23); see `docs/sycophancy-audit-summary.md`, Extension A.
+
+**Gain:** The shallow-layer recovery result can now be attributed to claim-specific content rather than to token overwriting alone. This control has not yet been extended to the deep-layer position; see the open item in the Extension A writeup.
+
+## 2026-07-28 - Two crash-causing dangling references found before any GPU run
+
+**Issue:** During a repair cycle on `full_experiment_v4.py`, static code review (performed before any execution, per this repo's plan-review-run-review discipline) found two places where a dictionary key was read without being guaranteed to exist on every code path: an unused leftover field reference from a prior fix, and a missing check for a "skip" result inside the negative-control loop that would only be reached when a specific rare tokenization condition occurred.
+
+**Impact:** Both would have raised an uncaught exception partway through a run lasting up to roughly 45 minutes of GPU time. The second one specifically would only trigger on a length-mismatched example, making it likely to surface unpredictably deep into a run rather than at the start.
+
+**Fix:** Both dangling references were corrected before the script was executed. Output writing was also changed from a single write at the end of the run to an incremental, flushed write after every record, so a crash from any other unforeseen cause would not lose already-computed results.
+
+**Verification:** A second static code review confirmed both fixes and found no further instance of the same class of bug; the corrected script then ran to completion with zero errors and an exact, independently verified output record count.
+
+**Gain:** GPU time is no longer spent running code that has not been checked for this class of defect, and a crash partway through a long run no longer discards completed work.

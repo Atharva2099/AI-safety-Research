@@ -1,6 +1,6 @@
 # Sycophancy Audit Summary
 
-Last updated: 2026-07-20
+Last updated: 2026-07-28
 
 ## Goal
 
@@ -169,3 +169,62 @@ Before the 300-item run, the corrected neutral-only selection rule was tested on
 - 300-item run: `src/sycophancy-audit/phase_2/results/prompt_variants_full_seed42_n300.jsonl`
 - The 300-item run completed with 302 JSONL lines: one metadata record, 300 example records, and one summary record.
 - The L4 VM was stopped after the run and verified `TERMINATED`. Persistent disk, machine image, and snapshots remain retained storage resources.
+
+## Extension A: Activation Patching (Corrected)
+
+Extension A asks a causal question rather than the behavioral question in Phases 1-2: if a wrong-claim prompt's answer is restored by transplanting hidden-state activations from the same example's correct-claim prompt, at which layers and positions does that transplant work?
+
+The first version of this experiment, and two subsequent revisions, each contained defects that were found and fixed over the course of this audit; see the six 2026-07-28 entries in `docs/bugs-squashed.md` for the individual issues. The results below are from the fourth revision (`full_experiment_v4.py`), which was reviewed by two independent static code passes before it was run, and whose output was independently spot-checked against its own recorded metadata (638 records: 1 metadata, 60 stable-correct-pool scan, 192 discovery-flip patches, 288 heldout-flip patches, 0 stable-correct patches, 96 negative-control patches, 1 summary; arithmetic confirmed to add up exactly, zero skipped or errored records).
+
+Model: `google/gemma-4-E2B-it`, 35 decoder layers, bfloat16. Dataset: `google/boolq` validation split, seed 42. Source prompt: ground-truth Choices legend with a claim asserting the correct letter. Target prompt: the identical Choices legend with a claim asserting the incorrect letter (the two prompts differ by exactly one character, confirmed mechanically for every run). Score: log-probability of the single letter token that distinguishes the two candidate answers, float32. Recovery is defined as `(margin_patched - margin_target) / (margin_source - margin_target)`, computed only when the denominator exceeds 1.0 logit (signed, not absolute); values below that floor are recorded as null rather than a computed ratio.
+
+Two patch positions were tested: `claim_span` (the position where the source and target prompts diverge) and `readout_token` (the position whose hidden state directly produces the scored logit). Two example groups were carried from the original example selection: `discovery_flip` (8 examples used while developing the method) and `heldout_flip` (12 examples not used during development).
+
+| Layer | Position | discovery_flip mean recovery (n=8) | heldout_flip mean recovery (n=12) |
+|---|---|---:|---:|
+| 0 | readout_token | -0.010 | -0.006 |
+| 5 | readout_token | 0.016 | 0.018 |
+| 10 | readout_token | 0.013 | 0.008 |
+| 12 | readout_token | 0.040 | 0.029 |
+| 13 | readout_token | 0.030 | 0.037 |
+| 15 | readout_token | 0.322 | 0.335 |
+| 17 | readout_token | 0.269 | 0.242 |
+| 20 | readout_token | 0.314 | 0.266 |
+| 25 | readout_token | 0.874 | 0.801 |
+| 30 | readout_token | 0.787 | 0.777 |
+| 34 (last layer) | readout_token | 1.000 | 1.000 |
+
+At the `claim_span` position (not tabulated above; recorded in `full_experiment_v4_seed42.jsonl`), recovery is large at layers 0-13 (roughly 0.4-0.9) and exactly 0.000 at every tested layer from 14 through 34, for every example in every group including the negative control. This matches this model's key/value-sharing configuration, in which decoder layers from a fixed layer onward reuse attention keys and values computed at an earlier layer; a patch at a prompt-internal position cannot reach a different position's output once that sharing boundary is crossed, independent of the patch's content.
+
+The `readout_token` position was added specifically to test layers at and beyond that boundary, because a within-position patch (cache and patch at the same position the answer is read from) is not blocked by the same mechanism. The table above shows non-zero, non-null recovery at every tested layer from 15 through 34, in both the discovery and heldout example sets independently. Layer 34 recovery of exactly 1.000 is expected on structural grounds: it is the model's last layer, so a full-position patch there is close to directly substituting the final pre-head hidden state.
+
+A negative control - patching in an unrelated example's activation, matched so the same letter token is written in both the real and control conditions, varying only the surrounding content - was run at both `claim_span` and `readout_token`. At `claim_span`, mean control recovery was 0.018 against approximately 0.23 for the real discovery-flip condition at the same position and its live layers (0-13). At `readout_token`, layers 15/17/20 specifically:
+
+| Layer | discovery_flip (n=8) | heldout_flip (n=12) | negative_control (n=8) |
+|---|---:|---:|---:|
+| 15 | 0.322 | 0.335 | -0.021 |
+| 17 | 0.269 | 0.242 | -0.040 |
+| 20 | 0.314 | 0.266 | -0.027 |
+
+The control's mean recovery stays near zero (ranging from about -0.04 to +0.06, both signs, no consistent direction) at every tested layer 0 through 34, while the real discovery-flip and heldout-flip conditions hold steady in the 0.24-0.34 range at layers 15, 17, and 20 independently. Every negative-control donor lookup succeeded on the first attempt (0 resamples, 0 skips out of 16 example-position pairs), and the full run reproduced the prior verified run's 638 records plus exactly 96 new records (734 total), with zero errors.
+
+Out of 60 examples scanned with this prompt construction and scoring method (8 discovery-flip, 12 heldout-flip, 40 additional), zero had a target-prompt margin indicating the model resisted the false claim. This is a property of this experiment's prompt wording and scoring method, not a restatement of the Phase 2 finding above: Phase 2, using a different prompt template and scoring method on the same model, measured roughly 50-73% resistance to the same kind of pressure (see the layout-specific accuracies above). The two numbers are not comparable without controlling for prompt format and are reported separately.
+
+### What this does and does not establish
+
+- The result shows that, in this specific patching setup, transplanting source-prompt activations at the position that produces the answer restores partial-to-full agreement with the source answer at every tested layer including the deepest ones, and that this recovery is substantially larger than a content-varying negative control at the same position and layers - including at layers 15 and above, where the negative control was added in a second run specifically to test this.
+- The recovery values at layers 25-34 (0.78-1.00) are close to the corrected-answer ceiling; whether they reflect a broad late-layer causal role or are dominated by the last few layers approaching the trivial layer-34 case has not been separately tested by layer.
+- All results use n=8 (discovery) and n=12 (heldout) examples, one seed, one model. No claim is made about other models, datasets, or prompt wordings.
+- The negative control isolates "the transplanted example's specific content" from "overwriting the position with any donor's activation." It does not by itself separate the effect of content from the effect of token identity, since identity is invariant at `readout_token` and role-matched at `claim_span` by construction (see `docs/bugs-squashed.md`, 2026-07-28 entries, for the reasoning).
+
+### Resolved item (previously open)
+
+An earlier version of this writeup noted that the negative control had only been run at `claim_span`, leaving open whether the `readout_token` deep-layer recovery reflected claim-specific content or any coherent inserted activation. A follow-up run (`full_experiment_v4b_seed42.jsonl`) added the same negative-control construction at `readout_token`. The control separates cleanly from the real signal at every tested layer, including 15, 17, and 20 (table above). This item is closed.
+
+### Code and run record
+
+- Corrected script (final version, includes the readout_token negative control): `src/sycophancy-audit/phase_2/activation_patching/audit_2026-07-28/full_v4/full_experiment_v4.py`
+- First run output (claim_span negative control only): `src/sycophancy-audit/phase_2/activation_patching/audit_2026-07-28/full_v4/full_experiment_v4_seed42.jsonl`
+- Second run output (adds readout_token negative control): `src/sycophancy-audit/phase_2/activation_patching/audit_2026-07-28/full_v4/full_experiment_v4b_seed42.jsonl`
+- Prior, superseded revisions and diagnostics are retained under the same `audit_2026-07-28/` directory for provenance; see `RECOVERY_NOTE.md` in the parent directory.
+- Original (pre-audit) results in `results/experiment_a_seed42.jsonl` and `results/full_experiment_seed42.jsonl` are affected by the bugs listed in `docs/bugs-squashed.md` and should not be used.
