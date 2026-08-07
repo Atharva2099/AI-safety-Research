@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Last updated: 2026-07-20
+Last updated: 2026-07-28
 
 Instructions for AI coding agents (Claude Code, Cursor, etc.) working in this repo. **Read this fully before doing anything.** The rules here override your defaults.
 
@@ -58,6 +58,13 @@ Answer it directly and well. Use the math when the math is the point. Connect it
 - Do not invent terms or use jargon as a substitute for an explanation.
 - Separate facts from interpretation. Say what the data shows, then state any uncertainty plainly.
 - Example: say "test which sentence causes the answer to change," not "run a prompt-factor ablation."
+- Assume zero prior knowledge of any technique or term, every time — don't assume a term explained earlier in the conversation is remembered. If a technical term is unavoidable, define it in plain language the first time it's used in a given explanation.
+
+### Keep explanations bite-sized
+
+- Explain in small chunks: a few sentences to a short paragraph at a time, not a long multi-section writeup.
+- Cover one idea, then stop and let the owner absorb it or ask before continuing to the next.
+- This applies to conceptual/teaching explanations specifically — it does not override the pre-run card, writeup, or documentation requirements elsewhere in this file, which need enough detail to be complete.
 
 ### When in doubt about scope
 
