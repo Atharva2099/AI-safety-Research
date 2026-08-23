@@ -1,6 +1,30 @@
 # Bugs Squashed
 
-Last updated: 2026-07-28
+Last updated: 2026-08-22
+
+## 2026-08-22 - Left-padding corrupted Gemma cross-lingual transfer matrix
+
+**Issue:** `compute_6x6_matrix.py` batched tokenization with the tokenizer's default padding side. `google/gemma-2-9b-it` ships `padding_side="left"`, so in a padded batch real tokens receive RoPE positions shifted by each sample's pad count. The resulting activations were position-scrambled, and every cell of the Gemma 6x6 transfer matrix collapsed to ~52-64% (e.g. en->en at Block 23 read 63.1% instead of the true 86.03% recorded by the unpadded layerwise run). OLMo 3, Qwen 3.5, and Ministral ship `padding_side="right"` and were unaffected.
+
+**Impact:** The annotated heatmap and findings table presented Gemma 2 as near-chance when it is actually among the strongest models; any downstream conclusion built on that matrix was invalid.
+
+**Fix:** Forced `tokenizer.padding_side = "right"` in `compute_6x6_matrix.py` before extraction (with right padding and causal attention, real-token positions match single-sequence inference). Verified with a single-cell sanity check: en->en at Block 23 returned exactly 86.03%, matching the layerwise artifact.
+
+**Verification:** Recomputed the full Gemma matrix on the L4 VM after the fix; diagonal values now agree with `multilingual_probe_google_gemma-2-9b-it_*.jsonl` within fold noise. Heatmap, 3D explorer, and `docs/rq2_findings.md` regenerated from the corrected matrix.
+
+**Gain:** All four model matrices are now directly comparable; the extraction path no longer depends on tokenizer-specific padding defaults.
+
+## 2026-08-19 - GPU capacity failures and migration records were incomplete
+
+**Issue:** The 2026-08-18/19 workspace records did not consistently summarize the Iowa and Virginia L4 stockouts, the successful Oregon migration, the atomic-create behavior, the redundant-asset cleanup, the OLMo 3 layerwise probing activity, and the final graceful termination in one reconciled account.
+
+**Impact:** The current resource state was accurate, but the historical record could incorrectly suggest that no migration or research workload occurred.
+
+**Fix:** Reconciled `workspace_state.md`, the session and cost ledgers, and this entry against the append-only event log and the locally present OLMo artifact. Recorded Iowa (`us-central1`) and Virginia (`us-east4-a`) `STOCKOUT` failures, the Oregon (`us-west1-a`) destination, the verified deletion of redundant resources, the 8.273523-hour L4 session, and the final `TERMINATED` state. The OLMo artifact is recorded as 38,280 records for 580 question IDs across the embedding layer and Blocks 0–31 with five folds; its exact invocation timestamp and actual billing remain unknown.
+
+**Verification:** The event log contains the atomic-create failures, Oregon creation, cleanup, workload session, and graceful stop. Final retained resources are one 100 GB `pd-balanced` boot disk and the `READY` machine image; no snapshots, static IPs, or reservations remain. Actual billing is still unreconciled.
+
+**Gain:** The ledgers now distinguish verified infrastructure facts from missing experiment metadata and do not treat capacity stockouts as VM or disk failures.
 
 ## 2026-07-18 - Duplicate Phase 1 benchmark file
 
@@ -238,7 +262,7 @@ Last updated: 2026-07-28
 
 ## 2026-07-28 - Activation-patching driver code existed only on the GPU VM
 
-**Issue:** The Python scripts that produced `results/experiment_a_seed42.jsonl` and `results/full_experiment_seed42.jsonl` in `src/sycophancy-audit/phase_2/activation_patching/` were not present in the git repository. They existed only under `~/sycophancy-audit` on GPU VM `atharva-experiments-l4-b`, which was never a git repository.
+**Issue:** The Python scripts that produced `results/experiment_a_seed42.jsonl` and `results/full_experiment_seed42.jsonl` in `src/sycophancy-audit/phase_2/activation_patching/` were not present in the git repository. They existed only under `~/sycophancy-audit` on the GPU workspace VM, which was never a git repository.
 
 **Impact:** The two results files could not be reproduced, audited, or debugged from the repository. The file of the same purpose already in the repository (`activation_patching.py`) is a separate, later, non-functional consolidation attempt that does not import correctly and was never run.
 

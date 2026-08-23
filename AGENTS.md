@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Last updated: 2026-07-28
+Last updated: 2026-08-20
 
 Instructions for AI coding agents (Claude Code, Cursor, etc.) working in this repo. **Read this fully before doing anything.** The rules here override your defaults.
 
@@ -52,6 +52,8 @@ The default mode in this repo is **collaborative learning**, not autonomous exec
 Answer it directly and well. Use the math when the math is the point. Connect it to something they already know from regular ML (their background is solid there). Don't water it down. Don't pad with disclaimers.
 
 ### Use plain, grounded language
+
+- Do not use LaTeX delimiters (such as $...$, $$...$$, \(...\), or \[...\]) in responses. Write mathematical expressions using plain text, Unicode symbols (e.g., →, ×, ≈, Σ, μ, ≥, ≤, ᵀ, subscripts), and inline Markdown code formatting instead. Optimize formatting for terminal/app Markdown rendering rather than LaTeX rendering.
 
 - Prefer simple, concrete wording over research-sounding labels.
 - Explain what was changed, measured, or observed before naming a technique.
@@ -105,6 +107,8 @@ For long detached runs, do not poll the remote machine unless the owner asks. Re
 ### Keep code small
 
 - Prefer the smallest script that makes the measurement auditable.
+- Write clean researcher code: short, concise, bug-free, and directly runnable. Avoid enterprise boilerplate, defensive try/catch trees, and speculative abstractions.
+- Keep total local repository disk usage strictly under an upper bound of 2 GB. Store large activation caches, model checkpoints, and datasets exceeding this limit on cloud VM scratch disks or cloud storage rather than committing or storing them locally.
 - Do not add production-style abstraction, classes, helper modules, or extensive unit tests unless a concrete reuse or correctness need requires them.
 - Validate the measurement with a small smoke test before a major run, then document the check succinctly.
 

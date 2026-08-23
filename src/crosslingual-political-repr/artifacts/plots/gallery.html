@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cross-Lingual Political Representations - Visual Gallery</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 40px auto; max-width: 1200px; background: #0f172a; color: #f8fafc; line-height: 1.6; padding: 0 20px; }
+        h1 { color: #38bdf8; border-bottom: 2px solid #1e293b; padding-bottom: 15px; }
+        h2 { color: #93c5fd; margin-top: 40px; }
+        .card { background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); }
+        img { width: 100%; height: auto; border-radius: 8px; border: 1px solid #334155; margin-top: 15px; }
+        iframe { width: 100%; height: 850px; border: 1px solid #334155; border-radius: 8px; margin-top: 15px; background: white; }
+        .tag { display: inline-block; background: #0284c7; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.85em; font-weight: 600; }
+        .fixed { display: inline-block; background: #16a34a; color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.85em; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <h1>Cross-Lingual Political Representations — Experiment Gallery</h1>
+
+    <div class="card">
+        <span class="tag">RQ2 Multi-Peak Finding</span>
+        <h2>1. Deduplicated Peak-Layer Transfer Heatmaps (Per-Model Suites)</h2>
+        <p>Full 6×6 transfer matrices evaluated at each language's native peak decodability layer, deduplicating when languages share a peak block.</p>
+        
+        <h3>Gemma 2 (9B) — 7 Unique Peaks (Blocks 13, 15, 18, 22, 23, 24, 25)</h3>
+        <p>Consistently high transfer across all language depths (80–82% off-diagonal mean), proving that the universal semantic subspace spans the entire middle network.</p>
+        <img src="rq2_google_gemma-2-9b-it_peak_layers_heatmaps.png" alt="Gemma 2 Multi-Peak Heatmaps">
+
+        <h3>Qwen 3.5 (9B) — 4 Unique Peaks (Blocks 10, 12, 14, 16)</h3>
+        <p>Symmetric cross-lingual transfer across its middle layers (77–78% off-diagonal mean), with Marathi consolidating earliest at Block 10.</p>
+        <img src="rq2_Qwen_Qwen3.5-9B_peak_layers_heatmaps.png" alt="Qwen 3.5 Multi-Peak Heatmaps">
+
+        <h3>Ministral (8B) — 5 Unique Peaks (Blocks 9, 20, 31, 32, 33)</h3>
+        <p>Persistent linguistic fragmentation across all depths: testing at Hindi (Block 9) or Chinese (Block 20) native peaks does not resolve cross-lingual transfer collapse.</p>
+        <img src="rq2_mistralai_Ministral-8B-Instruct-2410_peak_layers_heatmaps.png" alt="Ministral Multi-Peak Heatmaps">
+
+        <h3>OLMo 3 (7B) — 4 Unique Peaks (Blocks 10, 15, 17, 18)</h3>
+        <p>Block 17 anchors EN, DE, and ZH simultaneously with optimal transfer (68.9% off-diagonal mean); earlier layers show weaker global transfer.</p>
+        <img src="rq2_allenai_Olmo-3-7B-Instruct_peak_layers_heatmaps.png" alt="OLMo 3 Multi-Peak Heatmaps">
+    </div>
+
+    <div class="card">
+        <span class="tag">RQ2 Finding</span> <span class="fixed">Gemma matrix corrected</span>
+        <h2>2. Single Peak-Layer Overview (All 4 Models)</h2>
+        <p>Transfer accuracy for every Train Probe → Test Residual pair at each model's primary RQ1 English peak layer.</p>
+        <img src="rq2_annotated_4panel_heatmaps.png" alt="RQ2 Annotated 4-Panel Heatmaps">
+    </div>
+
+    <div class="card">
+        <span class="tag">RQ2 Interactive</span>
+        <h2>3. Interactive 3D Transfer Surface Explorer</h2>
+        <p>Hover any of the 36 markers for source probe, target residuals, accuracy, and layer. Use the dropdown to switch models. Z-axis starts at the 50% chance level.</p>
+        <iframe src="rq2_interactive_3d_explorer.html"></iframe>
+    </div>
+
+    <div class="card">
+        <span class="tag">RQ1 Finding</span>
+        <h2>4. Layerwise Emergence Curves (Normalized Depth)</h2>
+        <p>Political stance is chance-level (~50%) at the embedding layer, crystallizes in the middle residual stream, and drops slightly in final layers. Consistent across all 5 models tested.</p>
+        <img src="rq1_layerwise_emergence.png" alt="RQ1 Layerwise Emergence">
+    </div>
+
+    <div class="card">
+        <span class="tag">RQ1 Mechanistic</span>
+        <h2>5. Residual Stream 1D Separation Distributions</h2>
+        <p>Positive vs negative statement projections overlap completely at Layer 0 and split into clean bimodal distributions at peak layers.</p>
+        <img src="rq1_residual_separation.png" alt="RQ1 Residual Separation">
+    </div>
+</body>
+</html>

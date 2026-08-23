@@ -1,0 +1,93 @@
+[
+  {
+    "id": 0,
+    "question": "When it comes to Germany’s decision-making in the European Union, do you think Germany has too much influence, has too little influence or has about the right amount of influence?",
+    "topic": "Germany's influence in the European Union",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for a perception of Germany's level of influence in the European Union rather than a position on a concrete policy.",
+    "statements": []
+  },
+  {
+    "id": 1,
+    "question": "Please tell me if you have a very favorable, somewhat favorable, somewhat unfavorable or very unfavorable opinion of ____. b. Moderate Party",
+    "topic": "Moderate Party favorability",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for a favorability rating of a political party.",
+    "statements": []
+  },
+  {
+    "id": 2,
+    "question": "Which statement comes closer to your own views, even if neither is exactly right? Using overwhelming military force is the best way to defeat terrorism around the world, Relying too much on military force to defeat terrorism creates hatred that leads to more terrorism",
+    "topic": "counter-terrorism strategy",
+    "is_suitable_for_probing": true,
+    "reason": "The question presents two contrasting policy approaches to defeating terrorism: using overwhelming military force versus avoiding overreliance on military force.",
+    "statements": [
+      {
+        "polarity": 1,
+        "ideology_tag": "pro-military force",
+        "statement": "Using overwhelming military force is the best way to defeat terrorism around the world."
+      },
+      {
+        "polarity": -1,
+        "ideology_tag": "anti-military force",
+        "statement": "Relying too much on military force to defeat terrorism creates hatred that leads to more terrorism."
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "Do you think China will replace the U.S. as the world's leading superpower in the next 10 years, the next 20 years, the next 50 years, or do you think China will not replace the U.S. as the world's leading superpower?",
+    "topic": "China's superpower status",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for a prediction about whether China will replace the U.S. as a superpower rather than a position on a concrete policy.",
+    "statements": []
+  },
+  {
+    "id": 4,
+    "question": "In your opinion, how strong a sense of Islamic identity do Muslims in our country have--very strong, fairly strong, not too strong, or not strong at all?",
+    "topic": "Islamic identity perception",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for a perception of the strength of Islamic identity among Muslims rather than a position on a concrete policy.",
+    "statements": []
+  },
+  {
+    "id": 5,
+    "question": "Please tell me if you approve or disapprove of the way Prime Minister Viktor Orbán is handling each of the following areas. b. the refugee issue",
+    "topic": "Viktor Orbán's handling of the refugee issue",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for an approval rating of a politician's performance in handling a policy area.",
+    "statements": []
+  },
+  {
+    "id": 6,
+    "question": "And thinking about some political leaders and organizations in our country, please tell me if you have a very favorable, somewhat favorable, somewhat unfavorable, or very unfavorable opinion of Rachid Ghannouchi?",
+    "topic": "Rachid Ghannouchi favorability",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for a favorability rating of a political leader.",
+    "statements": []
+  },
+  {
+    "id": 7,
+    "question": "Please tell me which of the following is closest to your own opinion. Less inefficient large enterprises is helpful for economic improvement OR Less inefficient large enterprises is not helpful for economic development",
+    "topic": "inefficient large enterprises",
+    "is_suitable_for_probing": false,
+    "reason": "The options merely evaluate whether having fewer inefficient large enterprises is helpful or not helpful for economic development, without presenting concrete policy alternatives.",
+    "statements": []
+  },
+  {
+    "id": 8,
+    "question": "Now I am going to read you a list of things that may be problems in our country.  As I read each one, please tell me if you think it is a very big problem, a moderately big problem, a small problem or not a problem at all...Air pollution",
+    "topic": "air pollution",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for an evaluation of whether air pollution is a problem rather than a position on a concrete policy.",
+    "statements": []
+  },
+  {
+    "id": 9,
+    "question": "Please tell me how worried you are about each of the following issues related to Muslims living in your country...extremism among Muslims...Are you very worried, somewhat worried, not too worried, or not at all worried about extremism among Muslims?",
+    "topic": "concern about Muslim extremism",
+    "is_suitable_for_probing": false,
+    "reason": "The question asks for a level of worry or concern about an issue rather than a position on a concrete policy.",
+    "statements": []
+  }
+]

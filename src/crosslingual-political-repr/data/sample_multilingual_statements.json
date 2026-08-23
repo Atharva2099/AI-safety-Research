@@ -1,0 +1,123 @@
+[
+  {
+    "id": 0,
+    "topic": "International Relations",
+    "polarity": 1,
+    "en": "Germany has too much influence in the European Union.",
+    "es": "Alemania tiene demasiada influencia en la Unión Europea.",
+    "de": "Deutschland hat zu viel Einfluss in der Europäischen Union.",
+    "zh": "德国在欧盟的影响力过大。",
+    "hi": "यूरोपीय संघ में जर्मनी का प्रभाव बहुत अधिक है।",
+    "mr": "युरोपीय युनियनमध्ये जर्मनीचा प्रभाव खूप जास्त आहे."
+  },
+  {
+    "id": 0,
+    "topic": "International Relations",
+    "polarity": 0,
+    "en": "Germany has about the right amount of influence in the European Union.",
+    "es": "Alemania tiene la cantidad de influencia justa en la Unión Europea.",
+    "de": "Deutschland hat ungefähr den richtigen Einfluss in der Europäischen Union.",
+    "zh": "德国在欧盟的影响力恰到好处。",
+    "hi": "यूरोपीय संघ में जर्मनी का प्रभाव लगभग सही मात्रा में है।",
+    "mr": "युरोपीय युनियनमध्ये जर्मनीचा प्रभाव योग्य प्रमाणात आहे."
+  },
+  {
+    "id": 0,
+    "topic": "International Relations",
+    "polarity": -1,
+    "en": "Germany has too little influence in the European Union.",
+    "es": "Alemania tiene muy poca influencia en la Unión Europea.",
+    "de": "Deutschland hat zu wenig Einfluss in der Europäischen Union.",
+    "zh": "德国在欧盟的影响力过小。",
+    "hi": "यूरोपीय संघ में जर्मनी का प्रभाव बहुत कम है।",
+    "mr": "युरोपीय युनियनमध्ये जर्मनीचा प्रभाव खूप कमी आहे."
+  },
+  {
+    "id": 2,
+    "topic": "National Security",
+    "polarity": 1,
+    "en": "Using overwhelming military force is the best way to defeat terrorism around the world.",
+    "es": "El uso de una fuerza militar abrumadora es la mejor manera de derrotar al terrorismo en todo el mundo.",
+    "de": "Der Einsatz überwältigender militärischer Gewalt ist der beste Weg, um den Terrorismus weltweit zu besiegen.",
+    "zh": "使用压倒性的军事力量是击败世界各地恐怖主义的最佳途径。",
+    "hi": "दुनिया भर में आतंकवाद को हराने के लिए अत्यधिक सैन्य बल का उपयोग करना सबसे अच्छा तरीका है।",
+    "mr": "जगभरातील दहशतवादाचा पराभव करण्यासाठी जबरदस्त लष्करी बळाचा वापर करणे हा सर्वोत्तम मार्ग आहे."
+  },
+  {
+    "id": 2,
+    "topic": "National Security",
+    "polarity": -1,
+    "en": "Relying too much on military force to defeat terrorism creates hatred that leads to more terrorism.",
+    "es": "Depender demasiado de la fuerza militar para derrotar al terrorismo genera odio que conduce a más terrorismo.",
+    "de": "Eine zu starke Abhängigkeit von militärischer Gewalt zur Bekämpfung des Terrorismus erzeugt Hass, der zu mehr Terrorismus führt.",
+    "zh": "过度依赖军事力量来打击恐怖主义会产生仇恨，从而导致更多的恐怖主义。",
+    "hi": "आतंकवाद को हराने के लिए सैन्य बल पर अत्यधिक निर्भरता नफरत पैदा करती है जिससे और अधिक आतंकवाद फैलता है।",
+    "mr": "दहशतवादाचा पराभव करण्यासाठी लष्करी बळावर जास्त अवलंबून राहिल्याने द्वेष निर्माण होतो ज्यामुळे अधिक दहशतवाद वाढतो."
+  },
+  {
+    "id": 7,
+    "topic": "Economy",
+    "polarity": 1,
+    "en": "Less inefficient large enterprises is helpful for economic improvement.",
+    "es": "Tener menos grandes empresas ineficientes es útil para la mejora económica.",
+    "de": "Weniger ineffiziente Großunternehmen sind hilfreich für die wirtschaftliche Verbesserung.",
+    "zh": "减少低效的大型企业有利于经济改善。",
+    "hi": "कम अकुशल बड़े उद्यम आर्थिक सुधार के लिए सहायक होते हैं।",
+    "mr": "कमी अकार्यक्षम मोठे उद्योग आर्थिक सुधारणेसाठी उपयुक्त आहेत."
+  },
+  {
+    "id": 7,
+    "topic": "Economy",
+    "polarity": -1,
+    "en": "Less inefficient large enterprises is not helpful for economic development.",
+    "es": "Tener menos grandes empresas ineficientes no es útil para el desarrollo económico.",
+    "de": "Weniger ineffiziente Großunternehmen sind nicht hilfreich für die wirtschaftliche Entwicklung.",
+    "zh": "减少低效的大型企业对经济发展没有帮助。",
+    "hi": "कम अकुशल बड़े उद्यम आर्थिक विकास के लिए सहायक नहीं हैं।",
+    "mr": "कमी अकार्यक्षम मोठे उद्योग आर्थिक विकासासाठी उपयुक्त नाहीत."
+  },
+  {
+    "id": 10,
+    "topic": "Foreign Policy",
+    "polarity": 1,
+    "en": "Being tough with China on territorial disputes between China and our country is more important.",
+    "es": "Ser duro con China en las disputas territoriales entre China y nuestro país es más importante.",
+    "de": "Härte gegenüber China in Territorialstreitigkeiten zwischen China und unserem Land zu zeigen, ist wichtiger.",
+    "zh": "在我国与中国的领土争端中对中国采取强硬态度更为重要。",
+    "hi": "चीन और हमारे देश के बीच क्षेत्रीय विवादों पर चीन के साथ सख्ती से पेश आना अधिक महत्वपूर्ण है।",
+    "mr": "चीन आणि आपल्या देशामधील प्रादेशिक वादांवर चीनशी कठोरपणे वागणे अधिक महत्त्वाचे आहे."
+  },
+  {
+    "id": 10,
+    "topic": "Foreign Policy",
+    "polarity": -1,
+    "en": "Having a strong economic relationship with China is more important.",
+    "es": "Tener una relación económica sólida con China es más importante.",
+    "de": "Eine starke wirtschaftliche Beziehung zu China zu haben, ist wichtiger.",
+    "zh": "与中国保持强劲的经贸关系更为重要。",
+    "hi": "चीन के साथ मजबूत आर्थिक संबंध होना अधिक महत्वपूर्ण है।",
+    "mr": "चीनसोबत मजबूत आर्थिक संबंध असणे अधिक महत्त्वाचे आहे."
+  },
+  {
+    "id": 12,
+    "topic": "National Security",
+    "polarity": 1,
+    "en": "Using military force against countries that may seriously threaten our country, but have not attacked us, can be justified.",
+    "es": "El uso de la fuerza militar contra países que pueden representar una amenaza grave para nuestro país, pero que no nos han atacado, puede estar justificado.",
+    "de": "Der Einsatz militärischer Gewalt gegen Länder, die unser Land ernsthaft bedrohen könnten, uns aber nicht angegriffen haben, kann gerechtfertigt sein.",
+    "zh": "对可能对我国构成严重威胁但尚未对我国发动袭击的国家使用军事力量是可以正当化的。",
+    "hi": "उन देशों के खिलाफ सैन्य बल का उपयोग करना जो हमारे देश के लिए गंभीर खतरा बन सकते हैं, लेकिन जिन्होंने हम पर हमला नहीं किया है, उचित ठहराया जा सकता है।",
+    "mr": "ज्या देशांमुळे आपल्या देशाला गंभीर धोका निर्माण होऊ शकतो, परंतु ज्यांनी आपल्यावर हल्ला केलेला नाही, अशा देशांविरुद्ध लष्करी बळाचा वापर करणे न्याय्य ठरू शकते."
+  },
+  {
+    "id": 12,
+    "topic": "National Security",
+    "polarity": -1,
+    "en": "Using military force against countries that may seriously threaten our country, but have not attacked us, cannot be justified.",
+    "es": "El uso de la fuerza militar contra países que pueden representar una amenaza grave para nuestro país, pero que no nos han atacado, no puede estar justificado.",
+    "de": "Der Einsatz militärischer Gewalt gegen Länder, die unser Land ernsthaft bedrohen könnten, uns aber nicht angegriffen haben, kann nicht gerechtfertigt werden.",
+    "zh": "对可能对我国构成严重威胁但尚未对我国发动袭击的国家使用军事力量是不能正当化的。",
+    "hi": "उन देशों के खिलाफ सैन्य बल का उपयोग करना जो हमारे देश के लिए गंभीर खतरा बन सकते हैं, लेकिन जिन्होंने हम पर हमला नहीं किया है, उचित नहीं ठहराया जा सकता है।",
+    "mr": "ज्या देशांमुळे आपल्या देशाला गंभीर धोका निर्माण होऊ शकतो, परंतु ज्यांनी आपल्यावर हल्ला केलेला नाही, अशा देशांविरुद्ध लष्करी बळाचा वापर करणे न्याय्य ठरवले जाऊ शकत नाही."
+  }
+]

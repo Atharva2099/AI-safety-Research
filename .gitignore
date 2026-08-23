@@ -3,6 +3,9 @@
 __pycache__/
 *.py[cod]
 .cache/
+.pytest_cache/
+.pytest/
+.pi*
 
 # Local machine/session files
 .env
@@ -10,6 +13,7 @@ gcp-workspace/
 .DS_Store
 .claude/
 .claude_session
+pi-subagents-*.tgz
 
 # Model and training artifacts
 *.safetensors
@@ -42,3 +46,9 @@ src/sycophancy-audit/phase_3/temp_jobs/gemini_curation_*.jsonl
 # Activation-patching generated output (rebuild in progress)
 src/sycophancy-audit/phase_2/activation_patching/results/
 src/sycophancy-audit/phase_2/activation_patching/*.json
+
+# Package folder
+package/
+
+# Large crosslingual probing per-token JSONL outputs
+src/crosslingual-political-repr/artifacts/results/*.jsonl

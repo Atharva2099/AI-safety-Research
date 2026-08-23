@@ -1,0 +1,781 @@
+[
+  {
+    "id": 0,
+    "question": "When it comes to Germany’s decision-making in the European Union, do you think Germany has too much influence, has too little influence or has about the right amount of influence?",
+    "selections": {
+      "Belgium": [
+        0.21,
+        0.07,
+        0.69,
+        0.03
+      ],
+      "France": [
+        0.35,
+        0.09,
+        0.54,
+        0.02
+      ],
+      "Germany": [
+        0.13131313131313133,
+        0.30303030303030304,
+        0.5252525252525253,
+        0.04040404040404041
+      ],
+      "Greece": [
+        0.86,
+        0.04,
+        0.1,
+        0.0
+      ],
+      "Italy": [
+        0.6138613861386139,
+        0.0297029702970297,
+        0.3465346534653465,
+        0.009900990099009901
+      ],
+      "Netherlands": [
+        0.2,
+        0.06,
+        0.72,
+        0.02
+      ],
+      "Spain": [
+        0.53,
+        0.03,
+        0.43,
+        0.01
+      ],
+      "Sweden": [
+        0.15,
+        0.02,
+        0.82,
+        0.01
+      ]
+    },
+    "options": [
+      "Has too much influence",
+      "Has too little influence",
+      "Has about the right amount of influence",
+      "DK/Refused"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 1,
+    "question": "Please tell me if you have a very favorable, somewhat favorable, somewhat unfavorable or very unfavorable opinion of ____. b. Moderate Party",
+    "selections": {
+      "Sweden": [
+        0.06,
+        0.4,
+        0.38,
+        0.13,
+        0.03
+      ]
+    },
+    "options": [
+      "Very favorable",
+      "Somewhat favorable",
+      "Somewhat unfavorable",
+      "Very unfavorable",
+      "DK/Refused"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 2,
+    "question": "Which statement comes closer to your own views, even if neither is exactly right? Using overwhelming military force is the best way to defeat terrorism around the world, Relying too much on military force to defeat terrorism creates hatred that leads to more terrorism",
+    "selections": {
+      "Australia": [
+        0.0,
+        0.1836734693877551,
+        0.0,
+        0.0,
+        0.3010204081632653,
+        0.0,
+        0.01020408163265306,
+        0.20918367346938777,
+        0.29591836734693877
+      ],
+      "Belgium": [
+        0.0,
+        0.35678391959798994,
+        0.0,
+        0.0,
+        0.135678391959799,
+        0.0,
+        0.010050251256281407,
+        0.3165829145728643,
+        0.18090452261306533
+      ],
+      "Britain": [
+        0.0,
+        0.3401015228426396,
+        0.0,
+        0.0,
+        0.15228426395939088,
+        0.0,
+        0.005076142131979695,
+        0.350253807106599,
+        0.15228426395939088
+      ],
+      "Canada": [
+        0.0,
+        0.21354166666666666,
+        0.0,
+        0.0,
+        0.265625,
+        0.0,
+        0.015625,
+        0.2916666666666667,
+        0.21354166666666666
+      ],
+      "China": [
+        0.44,
+        0.0,
+        0.0,
+        0.4,
+        0.0,
+        0.0,
+        0.16,
+        0.0,
+        0.0
+      ],
+      "Denmark": [
+        0.0,
+        0.10101010101010101,
+        0.0,
+        0.0,
+        0.3939393939393939,
+        0.0,
+        0.010101010101010102,
+        0.25252525252525254,
+        0.24242424242424243
+      ],
+      "France": [
+        0.0,
+        0.31958762886597936,
+        0.0,
+        0.0,
+        0.16494845360824742,
+        0.0,
+        0.020618556701030927,
+        0.28865979381443296,
+        0.20618556701030927
+      ],
+      "Germany": [
+        0.0,
+        0.1958762886597938,
+        0.0,
+        0.0,
+        0.28865979381443296,
+        0.0,
+        0.015463917525773196,
+        0.33505154639175255,
+        0.16494845360824742
+      ],
+      "Greece": [
+        0.29,
+        0.0,
+        0.0,
+        0.64,
+        0.0,
+        0.0,
+        0.07,
+        0.0,
+        0.0
+      ],
+      "Hungary": [
+        0.504950495049505,
+        0.0,
+        0.0,
+        0.39603960396039606,
+        0.0,
+        0.0,
+        0.09900990099009901,
+        0.0,
+        0.0
+      ],
+      "India (Current national sample)": [
+        0.62,
+        0.0,
+        0.0,
+        0.21,
+        0.0,
+        0.0,
+        0.17,
+        0.0,
+        0.0
+      ],
+      "Italy": [
+        0.0,
+        0.2727272727272727,
+        0.0,
+        0.0,
+        0.2222222222222222,
+        0.0,
+        0.005050505050505051,
+        0.26262626262626265,
+        0.23737373737373738
+      ],
+      "Japan": [
+        0.0,
+        0.2153846153846154,
+        0.0,
+        0.0,
+        0.2717948717948718,
+        0.0,
+        0.05641025641025641,
+        0.2,
+        0.2564102564102564
+      ],
+      "Netherlands": [
+        0.0,
+        0.31313131313131315,
+        0.0,
+        0.0,
+        0.17676767676767677,
+        0.0,
+        0.010101010101010102,
+        0.30808080808080807,
+        0.1919191919191919
+      ],
+      "Poland": [
+        0.5148514851485149,
+        0.0,
+        0.0,
+        0.297029702970297,
+        0.0,
+        0.0,
+        0.18811881188118812,
+        0.0,
+        0.0
+      ],
+      "S. Korea": [
+        0.0,
+        0.30412371134020616,
+        0.0,
+        0.0,
+        0.18041237113402062,
+        0.0,
+        0.010309278350515464,
+        0.29896907216494845,
+        0.20618556701030927
+      ],
+      "Spain": [
+        0.0,
+        0.3299492385786802,
+        0.0,
+        0.0,
+        0.16243654822335024,
+        0.0,
+        0.01015228426395939,
+        0.29441624365482233,
+        0.20304568527918782
+      ],
+      "Sweden": [
+        0.0,
+        0.3112244897959184,
+        0.0,
+        0.0,
+        0.17857142857142858,
+        0.0,
+        0.01020408163265306,
+        0.3163265306122449,
+        0.1836734693877551
+      ],
+      "United States": [
+        0.0,
+        0.0,
+        0.54,
+        0.0,
+        0.0,
+        0.45,
+        0.01,
+        0.0,
+        0.0
+      ]
+    },
+    "options": [
+      "Using overwhelming military force is the best way to defeat terrorism around the world",
+      "If (survey country) had cooperated more with other countries, the number of coronavirus cases would have been lower in this country",
+      "Many of the problems facing our country can be solved by working with other countries",
+      "Relying too much on military force to defeat terrorism creates hatred that leads to more terrorism",
+      "No amount of cooperation between (survey country) and other countries would have reduced the number of coronavirus cases in this country",
+      "Few of the problems facing our country can be solved by working with other countries",
+      "DK/Refused",
+      "When dealing with major international issues, our country should take into account the interests of other countries, even if it means making compromises with them",
+      "When dealing with major international issues, our country should follow its own interests, even when other countries strongly disagree"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 3,
+    "question": "Do you think China will replace the U.S. as the world's leading superpower in the next 10 years, the next 20 years, the next 50 years, or do you think China will not replace the U.S. as the world's leading superpower?",
+    "selections": {
+      "China (Non-national sample)": [
+        0.05714285714285714,
+        0.17142857142857143,
+        0.2857142857142857,
+        0.4857142857142857
+      ],
+      "India (Non-national sample)": [
+        0.3595505617977528,
+        0.2696629213483146,
+        0.10112359550561797,
+        0.2696629213483146
+      ],
+      "Japan": [
+        0.07142857142857142,
+        0.19387755102040816,
+        0.1326530612244898,
+        0.6020408163265306
+      ],
+      "Russia": [
+        0.11764705882352941,
+        0.2,
+        0.15294117647058825,
+        0.5294117647058824
+      ],
+      "United States": [
+        0.12222222222222222,
+        0.24444444444444444,
+        0.1111111111111111,
+        0.5222222222222223
+      ]
+    },
+    "options": [
+      "Next 10 years",
+      "Next 20 years",
+      "Next 50 years",
+      "China will not replace U.S."
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 4,
+    "question": "In your opinion, how strong a sense of Islamic identity do Muslims in our country have--very strong, fairly strong, not too strong, or not strong at all?",
+    "selections": {
+      "Britain": [
+        0.34831460674157305,
+        0.5393258426966292,
+        0.0898876404494382,
+        0.02247191011235955
+      ],
+      "Canada": [
+        0.2222222222222222,
+        0.5111111111111111,
+        0.2,
+        0.06666666666666667
+      ],
+      "France": [
+        0.1414141414141414,
+        0.6262626262626263,
+        0.18181818181818182,
+        0.050505050505050504
+      ],
+      "Germany": [
+        0.40625,
+        0.46875,
+        0.10416666666666667,
+        0.020833333333333332
+      ],
+      "India (Non-national sample)": [
+        0.5157894736842106,
+        0.3473684210526316,
+        0.11578947368421053,
+        0.021052631578947368
+      ],
+      "Netherlands": [
+        0.32989690721649484,
+        0.5567010309278351,
+        0.08247422680412371,
+        0.030927835051546393
+      ],
+      "Poland": [
+        0.08333333333333333,
+        0.375,
+        0.4166666666666667,
+        0.125
+      ],
+      "Russia": [
+        0.16666666666666666,
+        0.3974358974358974,
+        0.3717948717948718,
+        0.0641025641025641
+      ],
+      "Spain": [
+        0.3804347826086957,
+        0.4782608695652174,
+        0.11956521739130435,
+        0.021739130434782608
+      ],
+      "United States": [
+        0.24705882352941178,
+        0.4470588235294118,
+        0.23529411764705882,
+        0.07058823529411765
+      ]
+    },
+    "options": [
+      "Very strong",
+      "Fairly strong",
+      "Not too strong",
+      "Not strong at all"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 5,
+    "question": "Please tell me if you approve or disapprove of the way Prime Minister Viktor Orbán is handling each of the following areas. b. the refugee issue",
+    "selections": {
+      "Hungary": [
+        0.7029702970297029,
+        0.22772277227722773,
+        0.06930693069306931
+      ]
+    },
+    "options": [
+      "Approve",
+      "Disapprove",
+      "DK/Refused"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 6,
+    "question": "And thinking about some political leaders and organizations in our country, please tell me if you have a very favorable, somewhat favorable, somewhat unfavorable, or very unfavorable opinion of Rachid Ghannouchi?",
+    "selections": {
+      "Tunisia": [
+        0.0967741935483871,
+        0.25806451612903225,
+        0.16129032258064516,
+        0.4838709677419355
+      ]
+    },
+    "options": [
+      "Very favorable",
+      "Somewhat favorable",
+      "Somewhat unfavorable",
+      "Very unfavorable"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 7,
+    "question": "Please tell me which of the following is closest to your own opinion. Less inefficient large enterprises is helpful for economic improvement OR Less inefficient large enterprises is not helpful for economic development",
+    "selections": {
+      "China (Non-national sample)": [
+        0.8072289156626506,
+        0.1927710843373494
+      ]
+    },
+    "options": [
+      "Less inefficient large enterprises is helpful for economic improvement",
+      "Less inefficient large enterprises is not helpful for economic development"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 8,
+    "question": "Now I am going to read you a list of things that may be problems in our country.  As I read each one, please tell me if you think it is a very big problem, a moderately big problem, a small problem or not a problem at all...Air pollution",
+    "selections": {
+      "Argentina": [
+        0.64,
+        0.27,
+        0.08,
+        0.01,
+        0.0
+      ],
+      "Bangladesh": [
+        0.35,
+        0.41,
+        0.2,
+        0.04,
+        0.0
+      ],
+      "Brazil": [
+        0.5,
+        0.41,
+        0.08,
+        0.01,
+        0.0
+      ],
+      "Chile": [
+        0.7777777777777778,
+        0.16161616161616163,
+        0.050505050505050504,
+        0.010101010101010102,
+        0.0
+      ],
+      "China": [
+        0.34,
+        0.36,
+        0.21,
+        0.05,
+        0.04
+      ],
+      "China (Non-national sample)": [
+        0.3711340206185567,
+        0.4020618556701031,
+        0.18556701030927836,
+        0.041237113402061855,
+        0.0
+      ],
+      "Colombia": [
+        0.9,
+        0.08,
+        0.01,
+        0.01,
+        0.0
+      ],
+      "Egypt": [
+        0.4444444444444444,
+        0.37373737373737376,
+        0.16161616161616163,
+        0.020202020202020204,
+        0.0
+      ],
+      "El Salvador": [
+        0.7128712871287128,
+        0.18811881188118812,
+        0.06930693069306931,
+        0.0297029702970297,
+        0.0
+      ],
+      "Ghana": [
+        0.54,
+        0.29,
+        0.12,
+        0.05,
+        0.0
+      ],
+      "India (Current national sample)": [
+        0.44,
+        0.24,
+        0.14,
+        0.05,
+        0.13
+      ],
+      "India (Old national sample)": [
+        0.5,
+        0.2708333333333333,
+        0.15625,
+        0.07291666666666667,
+        0.0
+      ],
+      "Indonesia": [
+        0.31313131313131315,
+        0.46464646464646464,
+        0.1919191919191919,
+        0.030303030303030304,
+        0.0
+      ],
+      "Jordan": [
+        0.35714285714285715,
+        0.42857142857142855,
+        0.1326530612244898,
+        0.08163265306122448,
+        0.0
+      ],
+      "Kenya": [
+        0.34,
+        0.37,
+        0.25,
+        0.04,
+        0.0
+      ],
+      "Lebanon": [
+        0.6,
+        0.29,
+        0.11,
+        0.0,
+        0.0
+      ],
+      "Malaysia": [
+        0.42424242424242425,
+        0.3434343434343434,
+        0.18181818181818182,
+        0.050505050505050504,
+        0.0
+      ],
+      "Mexico": [
+        0.696969696969697,
+        0.20202020202020202,
+        0.06060606060606061,
+        0.04040404040404041,
+        0.0
+      ],
+      "Nicaragua": [
+        0.86,
+        0.11,
+        0.02,
+        0.01,
+        0.0
+      ],
+      "Nigeria": [
+        0.5204081632653061,
+        0.2653061224489796,
+        0.1836734693877551,
+        0.030612244897959183,
+        0.0
+      ],
+      "Pakistan": [
+        0.43478260869565216,
+        0.34782608695652173,
+        0.18478260869565216,
+        0.03260869565217391,
+        0.0
+      ],
+      "Palest. ter.": [
+        0.5757575757575758,
+        0.32323232323232326,
+        0.09090909090909091,
+        0.010101010101010102,
+        0.0
+      ],
+      "Peru": [
+        0.7272727272727273,
+        0.23232323232323232,
+        0.04040404040404041,
+        0.0,
+        0.0
+      ],
+      "Philippines": [
+        0.6363636363636364,
+        0.25252525252525254,
+        0.08080808080808081,
+        0.030303030303030304,
+        0.0
+      ],
+      "Poland": [
+        0.2755102040816326,
+        0.5102040816326531,
+        0.1836734693877551,
+        0.030612244897959183,
+        0.0
+      ],
+      "Russia": [
+        0.40816326530612246,
+        0.4387755102040816,
+        0.1326530612244898,
+        0.02040816326530612,
+        0.0
+      ],
+      "S. Africa": [
+        0.3645833333333333,
+        0.2916666666666667,
+        0.22916666666666666,
+        0.11458333333333333,
+        0.0
+      ],
+      "Senegal": [
+        0.3838383838383838,
+        0.31313131313131315,
+        0.23232323232323232,
+        0.0707070707070707,
+        0.0
+      ],
+      "Tanzania": [
+        0.6020408163265306,
+        0.2653061224489796,
+        0.11224489795918367,
+        0.02040816326530612,
+        0.0
+      ],
+      "Thailand": [
+        0.6020408163265306,
+        0.336734693877551,
+        0.04081632653061224,
+        0.02040816326530612,
+        0.0
+      ],
+      "Tunisia": [
+        0.8181818181818182,
+        0.1414141414141414,
+        0.030303030303030304,
+        0.010101010101010102,
+        0.0
+      ],
+      "Turkey": [
+        0.5408163265306123,
+        0.2653061224489796,
+        0.12244897959183673,
+        0.07142857142857142,
+        0.0
+      ],
+      "Uganda": [
+        0.5454545454545454,
+        0.24242424242424243,
+        0.1717171717171717,
+        0.04040404040404041,
+        0.0
+      ],
+      "Ukraine": [
+        0.32653061224489793,
+        0.45918367346938777,
+        0.19387755102040816,
+        0.02040816326530612,
+        0.0
+      ],
+      "Venezuela": [
+        0.6565656565656566,
+        0.23232323232323232,
+        0.10101010101010101,
+        0.010101010101010102,
+        0.0
+      ],
+      "Vietnam": [
+        0.7171717171717171,
+        0.24242424242424243,
+        0.030303030303030304,
+        0.010101010101010102,
+        0.0
+      ]
+    },
+    "options": [
+      "Very big problem",
+      "Moderately big problem",
+      "Small problem",
+      "Not a problem at all",
+      "DK/Refused"
+    ],
+    "source": "GAS"
+  },
+  {
+    "id": 9,
+    "question": "Please tell me how worried you are about each of the following issues related to Muslims living in your country...extremism among Muslims...Are you very worried, somewhat worried, not too worried, or not at all worried about extremism among Muslims?",
+    "selections": {
+      "Britain": [
+        0.4583333333333333,
+        0.2708333333333333,
+        0.15625,
+        0.11458333333333333
+      ],
+      "France": [
+        0.297029702970297,
+        0.3465346534653465,
+        0.16831683168316833,
+        0.18811881188118812
+      ],
+      "Germany": [
+        0.24731182795698925,
+        0.3225806451612903,
+        0.17204301075268819,
+        0.25806451612903225
+      ],
+      "Spain": [
+        0.2268041237113402,
+        0.24742268041237114,
+        0.2268041237113402,
+        0.29896907216494845
+      ]
+    },
+    "options": [
+      "Very worried",
+      "Somewhat worried",
+      "Not too worried",
+      "Not at all worried"
+    ],
+    "source": "GAS"
+  }
+]
