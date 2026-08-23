@@ -18,8 +18,29 @@
     <h1>Cross-Lingual Political Representations — Experiment Gallery</h1>
 
     <div class="card">
+        <span class="tag">RQ2 Non-Linear Probing</span>
+        <h2>1. Non-Linear 2-Layer MLP Probe Cross-Lingual Transfer</h2>
+        <p>Testing whether cross-lingual transfer failure is linear-only or structural. A 2-layer MLP boosts Gemma 2 off-diagonal transfer to 85.0%, but completely fails to fix Ministral's cross-script collapse (Chinese on English is 59.0%, on Marathi is 50.7%), proving linguistic isolation is structural.</p>
+        <img src="rq2_mlp_cross_lingual_heatmaps.png" alt="MLP Cross-Lingual Heatmaps">
+    </div>
+
+    <div class="card">
+        <span class="tag">RQ2 Weight Geometry</span>
+        <h2>2. Probe Weight Direction Cosine Similarity (15 Pairs)</h2>
+        <p>Direct cosine similarity between learned probe weight vectors across all 15 language pairs. Confirms high directional alignment in Gemma 2 (mean 0.39) vs. isolated orthogonal directions in Ministral (0.10 on cross-script pairs).</p>
+        <img src="rq2_probe_weight_cosine_similarity.png" alt="Weight Cosine Similarities">
+    </div>
+
+    <div class="card">
+        <span class="tag">RQ2 Ground-Truth Calibration</span>
+        <h2>3. 1D Stance Calibration: Neutral (0) vs. Opposing (±1) Statements</h2>
+        <p>Held-out neutral statements (label = 0) naturally project near zero (the decision boundary), while positive (+1) and negative (-1) statements separate into clean symmetric modes.</p>
+        <img src="rq2_neutral_zero_calibration_projections.png" alt="Neutral 0-Label Projections">
+    </div>
+
+    <div class="card">
         <span class="tag">RQ2 Multi-Peak Finding</span>
-        <h2>1. Deduplicated Peak-Layer Transfer Heatmaps (Per-Model Suites)</h2>
+        <h2>4. Deduplicated Peak-Layer Transfer Heatmaps (Per-Model Suites)</h2>
         <p>Full 6×6 transfer matrices evaluated at each language's native peak decodability layer, deduplicating when languages share a peak block.</p>
         
         <h3>Gemma 2 (9B) — 7 Unique Peaks (Blocks 13, 15, 18, 22, 23, 24, 25)</h3>

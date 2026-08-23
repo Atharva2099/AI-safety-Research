@@ -23,8 +23,22 @@ For each model and layer, final-token hidden states were extracted in a single f
 
 ---
 
+## Non-Linear 2-Layer MLP Probe Transfer
+
+To verify whether cross-lingual transfer limitations stem from non-linear representation geometry rather than conceptual absence, we evaluated a 2-layer MLP probe (128 hidden units, LayerNorm, ReLU, Dropout 0.1, AdamW) trained and evaluated using the identical 5-fold grouped out-of-fold cross-validation split.
+
+| Model | Peak Layer | Linear In-Lang | Linear Off-Diag | MLP In-Lang | MLP Off-Diag | Takeaway |
+|---|---:|---:|---:|---:|---:|---|
+| **Gemma 2 (9B)** | Block 23 | 84.76% | 81.45% | **87.01%** | **85.04%** | Non-linear capacity further strengthens the universal subspace across all scripts. |
+| **Ministral (8B)** | Block 31 | 83.33% | 67.72% | **74.60%** | **66.35%** | MLP does not fix cross-script collapse (`zh` on `en` = 58.97%, on `mr` = 50.69%), confirming conceptual absence. |
+| **Qwen 3.5 (9B)** | Block 14 | 84.41% | 78.18% | **84.73%** | **80.54%** | Consistent, symmetric transfer across all 6 languages. |
+| **OLMo 3 (7B)** | Block 17 | 79.84% | 68.89% | **80.56%** | **73.29%** | Moderate cross-lingual gain under non-linear probing. |
+
 ## Multi-Panel Visualizations
 
+- **2-Layer MLP 4-Panel Comparison:** `artifacts/plots/rq2_mlp_cross_lingual_heatmaps.png`
+- **Probe Weight Cosine Similarity (15 pairs):** `artifacts/plots/rq2_probe_weight_cosine_similarity.png`
+- **0-Label Neutral Calibration Distributions:** `artifacts/plots/rq2_neutral_zero_calibration_projections.png`
 - **OLMo 3 (4 panels):** `artifacts/plots/rq2_allenai_Olmo-3-7B-Instruct_peak_layers_heatmaps.png`
 - **Ministral 8B (5 panels):** `artifacts/plots/rq2_mistralai_Ministral-8B-Instruct-2410_peak_layers_heatmaps.png`
 - **Gemma 2 (7 panels):** `artifacts/plots/rq2_google_gemma-2-9b-it_peak_layers_heatmaps.png`
