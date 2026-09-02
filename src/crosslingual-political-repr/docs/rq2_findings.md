@@ -1,6 +1,6 @@
-# RQ2: Cross-Lingual Representation Geometry & Transfer Findings
+# RQ2: Cross-Lingual Representation & Transfer Findings
 
-Last updated: 2026-08-23
+Last updated: 2026-09-01
 
 ## Overview
 
@@ -10,7 +10,7 @@ We evaluated cross-lingual transfer in two complementary settings:
 1. **RQ1 Peak Baseline (Single English Peak per Model):** Evaluates all 6 languages at the model's English decodability peak layer.
 2. **Deduplicated Multi-Peak Analysis (Every Language's Optimal Layer):** Evaluates full 6×6 transfer matrices at each unique in-language peak layer, deduplicating when multiple languages share the same peak depth.
 
-For each model and layer, final-token hidden states were extracted in a single forward pass. For every source-language/target-language pair, a logistic-regression probe was fit on the source language and evaluated on the target language. The evaluation used five-fold grouped out-of-fold cross-evaluation: the question ID defined the group, so the two polarity statements belonging to one question stayed in the same fold.
+For each model and layer, the final non-padding token's intermediate hidden/residual-stream vector was extracted in a single forward pass. For every source-language/target-language pair, a logistic-regression probe was fit on the source language and evaluated on the target language. The evaluation used five-fold grouped out-of-fold cross-evaluation: the question ID defined the group, so the two polarity statements belonging to one question stayed in the same fold.
 
 ## Multi-Peak Deduplicated Layer Summary
 
@@ -23,20 +23,88 @@ For each model and layer, final-token hidden states were extracted in a single f
 
 ---
 
-## Non-Linear 2-Layer MLP Probe Transfer
+## Corrected Non-Linear MLP Probe Transfer
 
-To verify whether cross-lingual transfer limitations stem from non-linear representation geometry rather than conceptual absence, we evaluated a 2-layer MLP probe (128 hidden units, LayerNorm, ReLU, Dropout 0.1, AdamW) trained and evaluated using the identical 5-fold grouped out-of-fold cross-validation split.
+The corrected evaluation uses a one-hidden-layer MLP trained on frozen language-model activations, with hidden width 8 and ReLU (`Linear(in_dim, 8) → ReLU → Linear(8, 1)`), source-only standardization, grouped five-fold outer splits, source-only inner validation for epoch selection, and a fresh outer-training refit. Five initialization seeds were used for the primary result (150 fits); the shuffled-label control used seed 1729 (30 fits). After fitting on one source language, that fitted probe was held fixed and reused unchanged across all six target languages. Earlier oversized-probe numbers and conclusions are not used here.
 
-| Model | Peak Layer | Linear In-Lang | Linear Off-Diag | MLP In-Lang | MLP Off-Diag | Takeaway |
-|---|---:|---:|---:|---:|---:|---|
-| **Gemma 2 (9B)** | Block 23 | 84.76% | 81.45% | **87.01%** | **85.04%** | Non-linear capacity further strengthens the universal subspace across all scripts. |
-| **Ministral (8B)** | Block 31 | 83.33% | 67.72% | **74.60%** | **66.35%** | MLP does not fix cross-script collapse (`zh` on `en` = 58.97%, on `mr` = 50.69%), confirming conceptual absence. |
-| **Qwen 3.5 (9B)** | Block 14 | 84.41% | 78.18% | **84.73%** | **80.54%** | Consistent, symmetric transfer across all 6 languages. |
-| **OLMo 3 (7B)** | Block 17 | 79.84% | 68.89% | **80.56%** | **73.29%** | Moderate cross-lingual gain under non-linear probing. |
+| Model | Layer | Linear diagonal | Corrected MLP diagonal | Δ diagonal | Linear off-diagonal | Corrected MLP off-diagonal | Δ off-diagonal | Shuffled control range / mean |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| **OLMo 3 (7B)** | 17 | 79.84% | 70.23% | −9.61 pp | 68.89% | 64.84% | −4.05 pp | 46.55–54.14% / 50.04% |
+| **Ministral (8B)** | 31 | 83.33% | 83.06% | −0.28 pp | 67.72% | 67.32% | −0.40 pp | 47.24–57.41% / 52.68% |
+| **Gemma 2 (9B)** | 23 | 84.76% | 85.26% | +0.50 pp | 81.45% | 84.33% | +2.89 pp | 46.38–59.22% / 53.50% |
+| **Qwen 3.5 (9B)** | 14 | 84.37% | 83.36% | −1.00 pp | 78.24% | 81.11% | +2.87 pp | 46.12–62.59% / 54.97% |
+
+The source-language diagonals are the first comparison gate. After rounding, the Ministral, Gemma, and Qwen diagonal means differ from their linear values by approximately one percentage point or less; this is a descriptive screening rule, not statistical equivalence. OLMo is 9.61 points lower, so its transfer comparison should not be interpreted as an MLP improvement over its linear baseline. For the full source→target matrix, mean off-diagonal changes relative to the linear artifact were −4.05, −0.40, +2.89, and +2.87 percentage points for OLMo, Ministral, Gemma, and Qwen respectively.
+
+Variability summaries for the corrected matrices: mean pooled fold/seed accuracy SD was 3.84, 3.69, 2.49, and 2.46 percentage points; mean SD across the five seed-level means was 1.63, 1.56, 0.39, and 0.47 points; mean SD across fold-level means was 2.77, 2.48, 2.36, and 2.25 points, in the same model order. Fold-level variability exceeds seed-level variability for every model in these summaries. In plain terms, changing the held-out questions moved results more than changing initialization. These SDs describe variation in this evaluation; they are not uncertainty intervals or statistical tests. The one shuffled-label control produced the values shown in the table: OLMo 46.55–54.14% (mean 50.04%), Ministral 47.24–57.41% (mean 52.68%), Gemma 46.38–59.22% (mean 53.50%), and Qwen 46.12–62.59% (mean 54.97%). Multiple independent shuffles or a permutation analysis are needed for inference.
+
+These results establish measured transfer behavior for this width-8 probe and split procedure. They do not establish that the underlying representations lack a concept, explain why OLMo's width-8 fit trails its linear baseline, or justify claims about larger MLPs.
+
+### Corrected diagnostics and extraction limitations
+
+Across the 150 final refits per model, mean `source_training` accuracy was: OLMo 76.11%; Ministral 90.18%; Gemma 89.73%; Qwen 89.61%. Mean `source_validation` accuracy from the separate inner epoch-selection models was: OLMo 70.52%; Ministral 82.37%; Gemma 84.12%; Qwen 82.77%. These are means of the recorded fold/seed metrics, not confidence intervals.
+
+OLMo has a language-specific oddity: Hindi has 90.30% `source_training` accuracy from the final refit and 81.16% `source_validation` accuracy from the separate inner epoch-selection model, compared with Spanish at 67.90% and 63.42%, and Chinese at 68.98% and 65.81%, respectively. The reason Hindi performs best here is unknown. The official OLMo model card labels the model language as English and does not document Hindi coverage there; that does not prove Hindi was absent from Dolma 3 pretraining. Tokenizer coverage, training-corpus composition, and token-position diagnostics are plausible checks, not established explanations.
+
+---
+
+## 8-Condition Representation Extraction & Diagnostic Findings
+
+The final diagnostic evaluation compares eight representation extraction strategies across all four models, using batch size 16 and grouped five-fold out-of-fold cross-validation with inner 3-fold grouped hyperparameter selection for `C ∈ {0.0001, 0.001, 0.01, 0.1, 1, 10}` (ties resolving to the smallest `C`). Probes were fit once per source/fold/condition and evaluated strictly on out-of-fold target rows (1,160 predictions per cell). The diagnostic reference layers are 17 for OLMo, 31 for Ministral, 23 for Gemma, and 12 for Qwen. Qwen Layer 12 follows the earliest-layer rule for its tied English-only peak at Layers 12–13.
+
+| Model | Layer | Baseline `current_raw` Off-Diag (Diag) | `mean_raw` Off-Diag (Diag) | `stripped_raw` Off-Diag (Diag) | `current_l2` Off-Diag (Diag) | `stripped_l2` Off-Diag (Diag) |
+|---|---:|---:|---:|---:|---:|---:|
+| **OLMo 3 (7B)** | 17 | 70.64% (80.70%) | 68.50% (81.97%) | 72.07% (81.26%) | 72.50% (80.39%) | 73.28% (81.51%) |
+| **Ministral (8B)** | 31 | 68.13% (83.45%) | 67.64% (81.21%) | 68.18% (83.03%) | 62.22% (72.47%) | 70.27% (81.87%) |
+| **Gemma 2 (9B)** | 23 | 84.67% (86.09%) | 76.01% (83.89%) | 80.28% (84.43%) | 85.11% (85.93%) | 80.90% (84.27%) |
+| **Qwen 3.5 (9B)** | 12 | 80.68% (84.60%) | 68.63% (82.34%) | 71.48% (80.52%) | 81.48% (84.05%) | 73.04% (80.07%) |
+
+### Predeclared Primary Contrasts (28 Simultaneous 95% Bootstrap Intervals)
+
+Simultaneous 95% max-statistic bootstrap confidence intervals (critical half-width ±1.21 pp across all 28 contrasts, 5,000 resamples over question IDs):
+
+1. **Gemma 2 (9B):**
+   - `mean_raw - current_raw`: −8.66 pp [−9.86, −7.46] pp (Significant drop under mean pooling)
+   - `stripped_raw - current_raw`: −4.39 pp [−5.60, −3.19] pp (Significant drop when terminal punctuation is stripped)
+   - `current_l2 - current_raw`: +0.43 pp [−0.77, +1.64] pp (Invariant to L2 vector normalization)
+2. **Qwen 3.5 (9B):**
+   - `mean_raw - current_raw`: −12.05 pp [−13.26, −10.84] pp (Significant drop under mean pooling)
+   - `stripped_raw - current_raw`: −9.20 pp [−10.41, −7.99] pp (Significant drop when terminal punctuation is stripped)
+   - `current_l2 - current_raw`: +0.80 pp [−0.41, +2.01] pp (Interval includes zero)
+3. **OLMo 3 (7B):**
+   - `mean_raw - current_raw`: −2.14 pp [−3.34, −0.94] pp
+   - `stripped_raw - current_raw`: +1.42 pp [+0.22, +2.63] pp (Modest gain when terminal punctuation is stripped)
+   - `current_l2 - current_raw`: +1.86 pp [+0.65, +3.06] pp (Significant gain under L2 normalization)
+   - `stripped_l2 - stripped_raw`: +1.21 pp [+0.01, +2.41] pp
+4. **Ministral (8B):**
+   - `mean_raw - current_raw`: −0.49 pp [−1.70, +0.71] pp
+   - `current_l2 - current_raw`: −5.91 pp [−7.12, −4.71] pp (Sharp drop under raw final L2 normalization)
+   - `content_l2 - content_raw`: +2.17 pp [+0.97, +3.37] pp
+   - `stripped_l2 - stripped_raw`: +2.09 pp [+0.88, +3.29] pp
+
+### Controls & Limitations
+
+1. **Cross-Language Character N-Gram Control:** A logistic-regression classifier using character 3–5-gram TF-IDF features was fit separately on each source language and applied unchanged to every target language. Each source language and fold had its own training-only vocabulary and IDF values. Mean within-language accuracy was **81.42%**, but mean cross-language accuracy was **51.67%** (`artifacts/results/crosslingual_char_ngram_controls.json.gz`).
+
+   | Train \ Test | en | es | de | zh | hi | mr |
+   |---|---:|---:|---:|---:|---:|---:|
+   | **en** | 83.62% | 60.95% | 51.90% | 50.00% | 50.00% | 50.00% |
+   | **es** | 62.59% | 79.66% | 53.28% | 50.00% | 49.91% | 50.00% |
+   | **de** | 50.00% | 50.86% | 80.78% | 50.00% | 50.00% | 50.00% |
+   | **zh** | 49.66% | 50.09% | 48.97% | 79.66% | 50.00% | 50.00% |
+   | **hi** | 50.00% | 50.00% | 50.00% | 50.00% | 83.28% | 59.31% |
+   | **mr** | 50.52% | 50.26% | 50.60% | 50.00% | 61.21% | 81.55% |
+
+   Direct surface transfer was strongest between English and Spanish and between Hindi and Marathi. The control does not test whether a multilingual semantic text representation can reproduce activation transfer.
+2. **Earlier Surface-Control Artifact:** The earlier `text_surface_controls.json` pooled three incompatible controls into a misleading 61.48% average. Its saved fold assignments also do not match the current documented `GroupKFold` procedure (902 of 1,160 English assignments differ), so its 81.91% character n-gram result is not used as the corrected baseline.
+3. **1D Vector Magnitude Controls:** Logistic regression trained strictly on scalar log vector length (`log(||h||)`) scored **49.8% to 50.7%** off-diagonal accuracy across all models and conditions. Scalar vector length alone was near chance in this evaluation.
+4. **Batch-Size Parity:** Qwen Layer 12 `current_raw` extracted with batch size 8 reproduced the historical Layer 12 matrix exactly in all 36 cells. Batch-size-16 extraction changed 580 of 41,760 predictions and had a maximum cell difference of 1.29 pp. This identifies BF16 extraction batch size as the source of the Qwen parity discrepancy. The earlier parity discrepancies for OLMo, Gemma, and Ministral remain unresolved.
+
+---
 
 ## Multi-Panel Visualizations
 
-- **2-Layer MLP 4-Panel Comparison:** `artifacts/plots/rq2_mlp_cross_lingual_heatmaps.png`
+- **Width-8 one-hidden-layer MLP 4-Panel Comparison:** `artifacts/plots/rq2_mlp_cross_lingual_heatmaps.png`
 - **Probe Weight Cosine Similarity (15 pairs):** `artifacts/plots/rq2_probe_weight_cosine_similarity.png`
 - **0-Label Neutral Calibration Distributions:** `artifacts/plots/rq2_neutral_zero_calibration_projections.png`
 - **OLMo 3 (4 panels):** `artifacts/plots/rq2_allenai_Olmo-3-7B-Instruct_peak_layers_heatmaps.png`
@@ -259,11 +327,10 @@ To verify whether cross-lingual transfer limitations stem from non-linear repres
 
 ## Takeaways
 
-1. **Gemma 2's Multilingual Subspace is Layer-Invariant Across Depth:**
-   Across all seven tested layers (Blocks 13 to 25), Gemma 2 maintains high, uniform cross-lingual transfer (79.97% to 82.32% off-diagonal mean). Its political polarity direction occupies a unified geometric coordinate system across English, Romance, Germanic, Sinitic, and Indic scripts.
-2. **Ministral's Cross-Lingual Fragmentation Persists Across Layers:**
-   Testing at native non-English peaks does not bridge Ministral's linguistic gap. Off-diagonal transfer remains low (62.96% at Block 9 to 67.75% at Block 32), confirming that the separation is structural rather than a layer-depth mismatch.
-3. **Qwen 3.5 Shows Consistent Middle-Layer Consolidation:**
-   Transfer is symmetric across Blocks 10, 12, 14, and 16, maintaining 77.0%–78.4% off-diagonal transfer.
-4. **OLMo 3 Reaches Multi-Language Co-Peak at Block 17:**
-   Block 17 anchors English, German, and Chinese with highest overall transfer (68.89%), while earlier layers show lower global alignment.
+The multi-peak matrices above are linear-probe observations at each selected layer. They should be kept separate from the corrected width-8 one-hidden-layer MLP result and the 8-condition extraction diagnostic, each evaluated at one selected layer per model.
+
+1. **Gemma 2 & Qwen 3.5 Exhibit a Raw Final-Token Advantage:** Among the raw extraction methods, the final non-padding token produces the highest cross-lingual transfer in Gemma and Qwen (84.67% and 80.68%). Mean pooling reduces transfer by 8.66 pp in Gemma and 12.05 pp in Qwen. Stripping terminal punctuation reduces it by 4.39 pp and 9.20 pp, respectively. These results apply to this dataset, extraction procedure, and selected layers.
+2. **OLMo 3 Benefits from Normalization and Punctuation Stripping:** Unlike Gemma and Qwen, OLMo's transfer improves when terminal punctuation is stripped (`stripped_raw` +1.42 pp) and under L2 normalization (`current_l2` +1.86 pp, `stripped_l2` +2.64 pp). Mean pooling decreases transfer (−2.14 pp).
+3. **Ministral 8B Transfer is Condition-Specific:** While raw final L2 normalization causes transfer to drop (−5.91 pp), terminal-content and stripped L2 representations improve transfer (+2.17 pp and +2.09 pp).
+4. **Scalar Vector Length Was Near Chance:** 1D vector magnitude controls (`norm_only`) yielded approximately 50.0% accuracy across all models and conditions in this evaluation.
+5. **Scope & Limitations:** These findings describe out-of-fold linear and width-8 probe transfer on 580 parallel question pairs across 6 languages. They do not establish general ideological representation, causal mechanism, or universal coordinate alignment. Earlier roadmap mentions of CKA were scoped out in favor of direct cross-lingual transfer matrices, weight cosine similarities, and extraction ablations.

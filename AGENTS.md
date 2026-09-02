@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Last updated: 2026-08-20
+Last updated: 2026-08-24
 
 Instructions for AI coding agents (Claude Code, Cursor, etc.) working in this repo. **Read this fully before doing anything.** The rules here override your defaults.
 
@@ -213,11 +213,7 @@ Surfaced ideas the owner may pick up later. Agents: don't act on these unprompte
 ## 6. Tooling
 
 - **Python:** `uv` everywhere. `uv venv .venv`, `uv pip install ...`, `uv run python ...`.
-- **GPUs / experiments:** the CORAL DS plugin is active. For any training run:
-  - Instrument with `report_metric.sh` and `report_note.sh`.
-  - Queue via `queue_experiment.sh`, never launch `python train.py` directly.
-  - Guard `CUDA_VISIBLE_DEVICES` overrides in scripts.
-  - Tell the owner to use `/ds:dash` and `/ds:queue` to monitor.
+- **GPUs / experiments:** guard `CUDA_VISIBLE_DEVICES` overrides in scripts.
 - **Citations in notes:** link to `papers/<slug>/notes.md` instead of re-pasting the abstract.
 
 ### Google Cloud Workspace
@@ -261,5 +257,5 @@ After every verified infrastructure operation, update `gcp-workspace/workspace_s
 3. Boilerplate fast, conceptual code slow and explained.
 4. End goal is **competence + cold emails**, not a published artifact.
 5. Don't create files unprompted. Don't pad with polish.
-6. Use `uv`. Use the CORAL queue for training. Respect the current roadmap phase.
+6. Use `uv`. Respect the current roadmap phase.
 7. Read and follow `gcp-workspace/SKILL.md` before any infrastructure action.

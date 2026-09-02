@@ -1,6 +1,42 @@
 # Bugs Squashed
 
-Last updated: 2026-08-22
+Last updated: 2026-09-01
+
+## 2026-09-01 - Surface-text controls were pooled and interpreted incorrectly
+
+**Issue:** The earlier documentation pooled character n-grams, length/tokenization/punctuation features, and terminal token ID into one 61.48% accuracy. These controls measure different hypotheses and should not be averaged. The saved artifact's fold assignments also do not match the current documented `GroupKFold` procedure: 902 of 1,160 English character-n-gram assignments differ.
+
+**Impact:** The documentation incorrectly claimed that the pooled result established that cross-language activation transfer was not decoding surface phrasing. The within-language control could not support that claim, and its fold provenance was not reproducible from the current script.
+
+**Fix:** Added a source-fit character 3–5-gram TF-IDF control using separate training-only vocabularies for every source language and fold. Each fitted classifier was applied unchanged to all six target languages. The artifact saves all predictions, vocabularies, IDF values, coefficients, intercepts, question-ID splits, software version, dataset hash, and target overlap rates.
+
+**Verification:** With scikit-learn 1.7.2 and data hash `95acbb8b293d1e22c054b18fd0b6d058e7420d0a4028a93c89e93fb68c63d170`, all 30 fits converged, all train/test question sets were disjoint, all vocabulary/IDF/coefficient arrays aligned, and every matrix cell contained 1,160 predictions. Mean within-language accuracy was 81.42%; mean cross-language accuracy was 51.67%.
+
+**Gain:** The corrected control distinguishes within-language textual shortcuts from direct cross-language character overlap. It does not claim to test multilingual semantic alignment.
+
+## 2026-09-01 - Qwen diagnostic parity depended on BF16 extraction batch size
+
+**Issue:** The Qwen Layer 12 batch-size-16 diagnostic did not satisfy the strict historical matrix parity gate, despite using the same model revision, data, layer, folds, and probe settings.
+
+**Impact:** The mismatch could have been mistaken for a layer-selection, model-revision, or probe implementation error.
+
+**Fix:** Repeated only the Qwen Layer 12 `current_raw` legacy lane using the historical extraction batch size of 8.
+
+**Verification:** The batch-size-8 run reproduced all 36 historical matrix cells exactly, with zero maximum and mean difference. Comparing batch sizes 8 and 16 changed 580 of 41,760 predictions. All 30 parity probes converged, the artifact hash was verified after synchronization, and the VM was stopped and verified `TERMINATED`.
+
+**Gain:** Qwen's parity discrepancy is explained by numerical sensitivity to BF16 extraction batching. Full eight-condition diagnostics remain at batch size 16 for consistency across all four models.
+
+## 2026-08-24 - Earlier MLP transfer evaluation used an oversized, incorrectly described setup
+
+**Issue:** The previous MLP transfer artifacts and findings described a width-128, LayerNorm/Dropout probe, but the reviewed corrected evaluation instead specifies a frozen width-8 ReLU MLP with source-only preprocessing, inner source validation, fresh outer-training refits, and explicit shuffled-label controls. The earlier evaluation was not used as evidence for the corrected result.
+
+**Impact:** The old width-128 matrices and conclusions were not directly comparable to the reviewed method and could overstate what the experiment measured. Those conclusions are retracted in `src/crosslingual-political-repr/docs/rq2_findings.md`.
+
+**Fix:** Ran the four reviewed model/layer pairs sequentially on the existing single L4 VM with five primary initialization seeds and a bounded label-shuffle control using seed 1729. The corrected artifacts use schema v4, width 8, 6×6 matrices, 150 primary fits, and 30 control fits.
+
+**Verification:** All four JSON artifacts passed schema, finite-value, matrix-shape, fold/seed-count, source-metadata, and control checks. Source-language diagonal comparisons were made against the existing linear baseline before interpreting transfer. The corrected heatmap was regenerated with labels identifying the width-8 method. The VM was synchronized and gracefully stopped; its live status was verified `TERMINATED`. Actual billing remains unreconciled.
+
+**Gain:** The documented MLP comparison now reports only the audited width-8 procedure, its variability and shuffled controls, and model-specific differences from the linear baseline. No claim is made about larger MLPs or representation-level conceptual absence.
 
 ## 2026-08-22 - Left-padding corrupted Gemma cross-lingual transfer matrix
 

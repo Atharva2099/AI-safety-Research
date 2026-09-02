@@ -1,4 +1,4 @@
-"""Plot MLP 6x6 cross-lingual transfer heatmaps and comparison against linear probes."""
+"""Plot corrected width-8 MLP 6x6 cross-lingual transfer heatmaps."""
 
 import json
 import re
@@ -59,7 +59,7 @@ def plot_mlp_heatmaps():
             yticklabels=LANGUAGES,
         )
         ax.set_title(
-            f"{display_name} — Block {layer} (2-Layer MLP)\n(Diag: {diag_mean*100:.1f}%, Off-Diag: {off_diag_mean*100:.1f}%)",
+            f"{display_name} — Block {layer} (width-8 MLP)\n(Diag: {diag_mean*100:.1f}%, Off-Diag: {off_diag_mean*100:.1f}%)",
             fontsize=13,
             weight="bold",
             pad=8,
@@ -68,7 +68,7 @@ def plot_mlp_heatmaps():
         ax.set_ylabel("Train Language MLP Probe", fontsize=11)
         ax.tick_params(axis="both", labelsize=10, length=0)
 
-    fig.suptitle("Non-Linear 2-Layer MLP Cross-Lingual Probe Transfer (Peak Layers)", fontsize=16, weight="bold", y=1.02)
+    fig.suptitle("Corrected width-8 MLP Cross-Lingual Probe Transfer (Peak Layers)", fontsize=16, weight="bold", y=1.02)
     if last_heatmap is not None:
         cbar = fig.colorbar(last_heatmap.collections[0], ax=axes, label="Transfer Accuracy", shrink=0.75, pad=0.02)
         cbar.ax.tick_params(labelsize=10)
