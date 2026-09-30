@@ -40,6 +40,17 @@ def records(path):
             yield json.loads(line)
 
 
+def selection_config(prior, development_items):
+    assert (prior['dataset'], prior['protocol'], prior['development_items']) == ('rile_v2', 'source_matrix_replay', development_items), 'Frozen replay configuration differs from this cohort'
+    path = ROOT / 'gcp-workspace/rile-v2-budgeted-full-20260929-retrieval' / Path(prior['selection_summary']).name
+    assert sha(path) == prior['selection_summary_sha256'], 'Original selection summary hash changed'
+    original = json.loads(path.read_text())
+    assert (original['model'], original['dataset'], original['protocol'], original['development_items']) == (prior['model'], 'rile_v2', 'budgeted_source_peak', development_items), 'Selection configuration differs from frozen replay'
+    batch = original['batch_size']
+    assert type(batch) is int and batch > 0 and batch == 8, 'Expected recorded extraction batch size 8'
+    return {'batch_size': batch, 'selection_summary': {'path': str(path), 'sha256': sha(path)}}
+
+
 def load_cohorts():
     assert sha(DATA) == 'fe6eb10383707b44a0fdfbbf65b95f6258c0ef459c30fec8240e8449f01700ca'
     rows = [json.loads(line) for line in DATA.read_text().splitlines()]
@@ -104,7 +115,7 @@ def write_predictions(output, name, rows):
     return {'path': str(path), 'sha256': sha(path), 'rows': len(rows)}
 
 
-def model_run(name, dev, hold, foldmap, smoke, output):
+def model_run(name, dev, hold, foldmap, smoke, output, config):
     import torch
     import transformers
     from huggingface_hub import try_to_load_from_cache
@@ -131,7 +142,7 @@ def model_run(name, dev, hold, foldmap, smoke, output):
     model = AutoModelForCausalLM.from_pretrained(snapshot, local_files_only=True, torch_dtype=dtype).to(device).eval()
     replay_snapshot_revision(snapshot, revision, getattr(model.config, '_commit_hash', None))
     assert all(0 <= l < model_dimensions(model.config)[0] for l in layers.values())
-    # First eight canonical rows retain the original two batch-of-four contexts.
+    # First eight canonical rows retain the original single batch-of-eight context.
     parity_rows = [r for r in map(json.loads, DATA.read_text().splitlines()) if not r['held_out']][:8]
     parity_ids = {r['item_id'] for r in parity_rows}
     expected = {}
@@ -147,7 +158,7 @@ def model_run(name, dev, hold, foldmap, smoke, output):
         for target in LANGS:
             combined = parity_rows + hold
             items = [{'statement': r[target]} for r in combined]
-            vectors = extract_rile_memmap(model, tokenizer, items, device, Path(scratch) / f'{target}.f16', 4)
+            vectors = extract_rile_memmap(model, tokenizer, items, device, Path(scratch) / f'{target}.f16', config['batch_size'])
             for f in range(5):
                 indices = [i for i, r in enumerate(combined) if foldmap[r['manifesto_id']] == f]
                 for source in LANGS:
@@ -171,7 +182,7 @@ def model_run(name, dev, hold, foldmap, smoke, output):
     assert len(predictions) == len(hold) * 36
     return {name: predictions}, {'selected_layers': prior['selected_layers'], 'model': model_id, 'model_revision': revision,
         'torch': torch.__version__, 'transformers': transformers.__version__, 'device': str(device), 'dtype': str(dtype),
-        'feature': 'raw final-token hidden states stored float16 then cast float32; batch size 4',
+        'feature': f'raw final-token hidden states stored float16 then cast float32; batch size {config["batch_size"]}',
         'dev_parity': {'items': len(parity_rows), 'checks': len(parity_errors), 'max_absolute_margin_error': max(parity_errors), 'atol': .001, 'rtol': .0001, 'guesses': 'exact'},
         'saved_summary': {'path': str(summary_path), 'sha256': sha(summary_path)}, 'saved_parameters': {'path': str(probe_path), 'sha256': sha(probe_path)}}
 
@@ -244,7 +255,12 @@ def main():
     helper_names = ['bootstrap_rile_transfer.py', 'run_rile_text_controls.py' if args.model == 'controls' else 'multilingual_layerwise_probe.py']
     summary['helper_sha256'] = {name: sha(Path(__file__).with_name(name)) for name in helper_names}
     try:
-        predictions, metadata = control_run(dev, hold, foldmap, args.smoke) if args.model == 'controls' else model_run(args.model, dev, hold, foldmap, args.smoke, args.output)
+        if args.model == 'controls':
+            predictions, metadata = control_run(dev, hold, foldmap, args.smoke)
+        else:
+            config = selection_config(json.loads(artifact(args.model, 'summary.json').read_text()), len(dev))
+            summary.update(config)
+            predictions, metadata = model_run(args.model, dev, hold, foldmap, args.smoke, args.output, config)
         summary.update(metadata)
         summary['prediction_files'] = {name: write_predictions(args.output, name, rows) for name, rows in predictions.items()}
         summary['matrices'] = {name: matrix(rows) for name, rows in predictions.items()}
