@@ -1,0 +1,114 @@
+{
+  "version": "v1",
+  "built": "2026-09-17",
+  "seed": 20260917,
+  "code_commit": "c184d81",
+  "target_per_side_per_lang": 1000,
+  "cap_per_category": 150,
+  "held_out_categories": {
+    "601": "national way of life",
+    "603": "traditional morality",
+    "506": "education expansion",
+    "107": "internationalism"
+  },
+  "pair_quota": {
+    "military": 200,
+    "welfare": 200,
+    "protectionism": 150
+  },
+  "pair_sources": [
+    "en",
+    "de"
+  ],
+  "n_items": 6169,
+  "by_source_lang": {
+    "es": 2000,
+    "de": 2056,
+    "en": 2113
+  },
+  "by_label": {
+    "right": 3076,
+    "left": 3093
+  },
+  "held_out_items": 1091,
+  "paired_items": 1428,
+  "length_words": {
+    "right_mean": 19.7,
+    "left_mean": 20.02,
+    "right_median": 17.0,
+    "left_median": 18.0
+  },
+  "report": {
+    "main": {
+      "en_right": {
+        "picked": 1000,
+        "available": 11326,
+        "categories": 13
+      },
+      "en_left": {
+        "picked": 1000,
+        "available": 16280,
+        "categories": 13
+      },
+      "de_right": {
+        "picked": 1000,
+        "available": 6939,
+        "categories": 13
+      },
+      "de_left": {
+        "picked": 1000,
+        "available": 10680,
+        "categories": 13
+      },
+      "es_right": {
+        "picked": 1000,
+        "available": 2004,
+        "categories": 13
+      },
+      "es_left": {
+        "picked": 1000,
+        "available": 4524,
+        "categories": 12
+      }
+    },
+    "paired": {
+      "military_left": {
+        "quota": 200,
+        "have": 200,
+        "met": true
+      },
+      "military_right": {
+        "quota": 200,
+        "have": 200,
+        "met": true
+      },
+      "welfare_left": {
+        "quota": 200,
+        "have": 200,
+        "met": true
+      },
+      "welfare_right": {
+        "quota": 200,
+        "have": 200,
+        "met": true
+      },
+      "protectionism_left": {
+        "quota": 150,
+        "have": 150,
+        "met": true
+      },
+      "protectionism_right": {
+        "quota": 150,
+        "have": 150,
+        "met": true
+      }
+    }
+  },
+  "file_sha256": {
+    "items.jsonl": "ff952178617fd234fabfd06ca4b960538a707170545e22b2e9339de3c559dcf8",
+    "text_de.jsonl": "98206dbba4ed210647f69f74dee24316920d32094f80ab69513b8638547fa4ac",
+    "text_en.jsonl": "196b4b76e93f22c3f5beae2cef804aa14a00822344dbb6dc01660ff95a92a630",
+    "text_es.jsonl": "3cb925f34ccb09672424f2f8eca79aa592d6a0dfe3a2436ad72c78f2c8593e24"
+  },
+  "note": "items.jsonl carries no sentence text and may be published; text_*.jsonl may not."
+}

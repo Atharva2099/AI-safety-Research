@@ -1,0 +1,34 @@
+{
+  "source": "legacy",
+  "threshold": 0.05,
+  "langs": {
+    "en": {
+      "n": 12394,
+      "matched_on": "cardiff",
+      "aucs": {
+        "cardiff": 0.500312412042567,
+        "nlptown": 0.4810526099796502,
+        "sst2": 0.4996203923520282,
+        "siebert": 0.4906879728511526,
+        "twitter_rob": 0.499830546249885,
+        "xlmr_multi": 0.5024076493987718
+      },
+      "worst_gap": 0.018947390020349786,
+      "threshold": 0.05,
+      "verdict": "PASS"
+    },
+    "de": {
+      "n": 10678,
+      "matched_on": "cardiff",
+      "aucs": {
+        "cardiff": 0.49835972181785737,
+        "nlptown": 0.49800650210537334,
+        "german": 0.49646052343032276,
+        "xlmr_multi": 0.49431605160386166
+      },
+      "worst_gap": 0.005683948396138339,
+      "threshold": 0.05,
+      "verdict": "PASS"
+    }
+  }
+}

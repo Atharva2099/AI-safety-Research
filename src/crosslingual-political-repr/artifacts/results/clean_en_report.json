@@ -1,0 +1,48 @@
+{
+  "input": "data/manifesto_raw.json",
+  "lang": "en",
+  "party_prefix": null,
+  "rules": {
+    "base": {
+      "in": 79861,
+      "out": 37883
+    },
+    "mojibake_repaired": {
+      "sentences_fixed": 879
+    },
+    "label_conflict": {
+      "texts": 111,
+      "sentences_dropped": 484,
+      "out": 37399
+    },
+    "dedup": {
+      "extra_copies_removed": 8368,
+      "out": 29031
+    },
+    "fragment": {
+      "dropped": 1192,
+      "out": 27839
+    },
+    "language": {
+      "dropped": 233,
+      "detectors_disagreed": 96,
+      "out": 27606
+    }
+  },
+  "artefacts": {
+    "<92>": 803,
+    "<96>": 248,
+    "<93>": 53,
+    "<94>": 53,
+    "<ae>": 5,
+    "<85>": 2,
+    "<91>": 7
+  },
+  "final": {
+    "n": 27606,
+    "right": 11326,
+    "left": 16280,
+    "manifestos": 38,
+    "parties": 35
+  }
+}

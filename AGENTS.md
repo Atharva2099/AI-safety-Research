@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Last updated: 2026-08-24
+Last updated: 2026-09-17
 
 Instructions for AI coding agents (Claude Code, Cursor, etc.) working in this repo. **Read this fully before doing anything.** The rules here override your defaults.
 
@@ -92,6 +92,20 @@ Notes are for the owner. Code is for the owner to run and tweak. Do not:
 - Do not claim a model, dataset, or technique is good, bad, broken, unsafe, or a breakthrough unless the evidence directly supports that narrow claim.
 - Separate measured results from hypotheses, limitations, and next questions.
 - Keep a dated entry in `docs/bugs-squashed.md` for each discovered evaluation, environment, or reproducibility issue. Record the issue, impact, fix, verification, and gain. Open issues must be labeled as open rather than described as fixed.
+
+### Research documentation rules (2026-09-17)
+
+* Organize records by research campaign and stage, not by day, job, or seed.
+* Keep one lean document per topic and avoid duplicating run histories.
+* Date every section, decision, status, and evidence update.
+* Every run must record its date, settings, seeds, Slurm ID, code/config provenance, output location, and status.
+* Every factual statement must cite nearby code, configuration, artifacts, scheduler records, the evidence registry, or a properly formatted external source.
+* Report numbers neutrally, including the cohort, aggregation method, and artifact source.
+* Do not turn numerical differences into performance claims unless the experiment explicitly tested that hypothesis.
+* When a hypothesis was explicitly tested, state only the supported result and its limitations.
+* Label evidence as `FACT`, `HYPOTHESIS`, `LIMITATION`, `SUPERSEDED`, `NEGATIVE RESULT`, or `INCOMPLETE`.
+* Preserve existing wording when reorganizing documentation. Add only the minimum context needed.
+* Do not let documentation language or agent memory turn preliminary results into conclusions.
 
 ### Major runs
 
@@ -232,6 +246,22 @@ Surfaced ideas the owner may pick up later. Agents: don't act on these unprompte
 Do not create a VM before checking existing resources. Do not run multiple GPU VMs without explicit approval. Do not delete or overwrite cloud resources without explicit approval. Do not expose credentials, SSH keys, `.env` contents, or secret files. Do not repeat timed-out lifecycle commands blindly. Do not leave GPU VMs running after work is complete.
 
 After every verified infrastructure operation, update `gcp-workspace/workspace_state.md`, append one valid JSON record to `gcp-workspace/workspace_log.jsonl`, update applicable session/cost ledgers, and report running resources plus ongoing cost drivers.
+
+**Which model runs GCP work:** a Sonnet agent handles GCP server management, not the root (Opus) session.
+
+- **Read-only checks** (VM status, disk usage, `nvidia-smi`, reading run logs, cost-ledger review) go to `escalation-worker` (Sonnet).
+- **Actions** (start/stop VMs, copying files to or from the VM, launching extraction jobs, updating the `gcp-workspace/` ledgers) go to `builder` (Sonnet). Only one such agent at a time.
+- The root session plans the run, writes the pre-run card, and gets the owner's go-ahead. The Sonnet agent then executes. Every handoff must include:
+  - this section and `gcp-workspace/SKILL.md`;
+  - the exact commands or job to run;
+  - the owner's approval for any start, stop, create, or delete;
+  - the completion criteria.
+- The Sonnet agent reports back:
+  - running resources and their cost;
+  - what changed;
+  - the ledger entries it wrote.
+
+  It never leaves a GPU VM running unless the owner has said to.
 
 ---
 

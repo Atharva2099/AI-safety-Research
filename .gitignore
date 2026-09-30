@@ -52,3 +52,16 @@ package/
 
 # Large crosslingual probing per-token JSONL outputs
 src/crosslingual-political-repr/artifacts/results/*.jsonl
+
+# Manifesto Project data: licence forbids redistribution (incl. derived/translated copies).
+# This repo is public, so never commit these.
+src/crosslingual-political-repr/data/manifesto_*
+src/crosslingual-political-repr/artifacts/results/manifesto_*
+# Curated pools and the versioned corpus also hold Manifesto sentences.
+# Counts-only reports under artifacts/results/clean_*_report.json stay tracked.
+src/crosslingual-political-repr/data/clean_*
+src/crosslingual-political-repr/data/dropped_*
+src/crosslingual-political-repr/data/rile_v*/
+# Regenerable sentiment-score caches (31 MB and growing). Model revisions are pinned in
+# src/tone.py and recorded in the docs, so these rebuild exactly.
+src/crosslingual-political-repr/artifacts/results/tone_scores_*.json

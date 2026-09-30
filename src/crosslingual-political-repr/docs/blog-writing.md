@@ -1,6 +1,6 @@
 # LessWrong Blog Working Notes
 
-Last updated: 2026-09-01
+Last updated: 2026-09-05
 
 ## Purpose
 
@@ -24,6 +24,15 @@ The safe interpretation for this post is:
 - Every claim, number, interpretation, and citation must be understood and verified by the author.
 
 The existing AI-generated Draft 1 is reference material only. It must not become the submission through editing or paraphrasing.
+
+### Practical interpretation after the first-post rejection
+
+- The rejection was an LLM-policy decision, not an assessment of the experiment's scientific quality.
+- LessWrong permits human-written text that uses AI-assisted research, facts, arguments, examples, and code.
+- Its current policy technically excludes lightly AI-edited human text from "LLM output," but substantial AI rewriting, edited AI drafts, and borrowed AI wording count as LLM output.
+- First-time authors face a stricter, close-to-zero-LLM standard, and automatic detection may reject prose even when the author considers the assistance minor.
+- For future submissions, the author will write from a blank page. AI may identify unsupported claims, inconsistencies, and unclear reasoning, but will not provide replacement submission prose.
+- Any genuinely human-written draft that appears falsely flagged should be raised with LessWrong moderators rather than rewritten to evade detection.
 
 ### Allowed workflow for this post
 

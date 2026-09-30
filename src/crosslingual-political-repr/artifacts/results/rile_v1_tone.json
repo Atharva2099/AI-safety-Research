@@ -1,0 +1,104 @@
+{
+  "model": "cardiffnlp/twitter-xlm-roberta-base-sentiment",
+  "model_revision": "f2f1202b1bdeb07342385c3f807f9c07cd8f5cf8",
+  "n_items": 6167,
+  "languages": {
+    "en": {
+      "n": 6167,
+      "n_left": 3092,
+      "n_right": 3075,
+      "mean_left": 0.042090944945812225,
+      "mean_right": 0.0007921988144516945,
+      "tone_auc": 0.48333701448269334,
+      "native": {
+        "n": 2113,
+        "n_left": 1060,
+        "n_right": 1053,
+        "mean_left": 0.05646020919084549,
+        "mean_right": -0.011663122102618217,
+        "tone_auc": 0.4677516171226863
+      },
+      "translated": {
+        "n": 4054,
+        "n_left": 2032,
+        "n_right": 2022,
+        "mean_left": 0.03459516540169716,
+        "mean_right": 0.007278576027601957,
+        "tone_auc": 0.4918275933238316
+      }
+    },
+    "es": {
+      "n": 6167,
+      "n_left": 3092,
+      "n_right": 3075,
+      "mean_left": 0.06192101538181305,
+      "mean_right": 0.0242241732776165,
+      "tone_auc": 0.48608572870980976,
+      "native": {
+        "n": 1998,
+        "n_left": 999,
+        "n_right": 999,
+        "mean_left": 0.14001236855983734,
+        "mean_right": 0.05671876668930054,
+        "tone_auc": 0.4630095561026492
+      },
+      "translated": {
+        "n": 4169,
+        "n_left": 2093,
+        "n_right": 2076,
+        "mean_left": 0.02464759722352028,
+        "mean_right": 0.008587323129177094,
+        "tone_auc": 0.4972417002449674
+      }
+    },
+    "de": {
+      "n": 6167,
+      "n_left": 3092,
+      "n_right": 3075,
+      "mean_left": -0.03875395283102989,
+      "mean_right": -0.0625188946723938,
+      "tone_auc": 0.478747988514814,
+      "native": {
+        "n": 2056,
+        "n_left": 1033,
+        "n_right": 1023,
+        "mean_left": -0.08438854664564133,
+        "mean_right": -0.053163446485996246,
+        "tone_auc": 0.5251925935809395
+      },
+      "translated": {
+        "n": 4111,
+        "n_left": 2059,
+        "n_right": 2052,
+        "mean_left": -0.015859078615903854,
+        "mean_right": -0.06718294322490692,
+        "tone_auc": 0.4541183715859721
+      }
+    },
+    "zh": {
+      "n": 6167,
+      "n_left": 3092,
+      "n_right": 3075,
+      "mean_left": -0.02344467118382454,
+      "mean_right": -0.04926792532205582,
+      "tone_auc": 0.4847868614520557
+    },
+    "hi": {
+      "n": 6167,
+      "n_left": 3092,
+      "n_right": 3075,
+      "mean_left": 0.06431648135185242,
+      "mean_right": 0.037546250969171524,
+      "tone_auc": 0.48313534008561304
+    },
+    "mr": {
+      "n": 6167,
+      "n_left": 3092,
+      "n_right": 3075,
+      "mean_left": -0.03947940468788147,
+      "mean_right": -0.056952640414237976,
+      "tone_auc": 0.4824495419598439
+    }
+  },
+  "note": "zh and mr are exploratory because Cardiff training-language coverage is limited."
+}

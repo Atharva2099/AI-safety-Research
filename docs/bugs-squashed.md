@@ -1,6 +1,214 @@
 # Bugs Squashed
 
-Last updated: 2026-09-01
+Last updated: 2026-09-30
+
+## 2026-09-30 - Exact model-cache lookup rejected unused repository files (fixed)
+
+**Issue (FACT):** The source-matrix replay's exact-pinned `snapshot_download(local_files_only=True)`
+required a complete model repository, even though the cached Transformers weights and configuration
+had loaded in the earlier run. The Qwen3.5 attempt raised `IncompleteSnapshotError` for five absent
+repository files before model loading. Read-only checks also found missing alternative weights for
+Ministral and bundled package files for Gemma. Evidence: ignored replay diagnostic logs under
+`gcp-workspace/`; resolver code in
+`src/crosslingual-political-repr/src/multilingual_layerwise_probe.py`.
+
+**Impact (FACT):** The resumed Qwen attempt aborted before extraction and produced no scored transfer
+matrix. The guarded wrapper shut down the GPU; a brief diagnostic retrieved the error. Completed OLMo
+results remain preserved. No alternate weights or bundled packages were downloaded.
+
+**Fix (FACT):** Resolve `config.json` from the local cache at the exact requested revision, require
+its file to exist, and verify that its parent is the matching `snapshots/<revision>` directory. Load the
+tokenizer and model from that directory with `local_files_only=True`, preserving the conflicting-config
+revision check. No network or branch fallback is introduced. This avoids demanding unused repository
+files while retaining the exact snapshot boundary.
+
+**Verification and gain (FACT):** Focused checks passed for an existing, missing and sentinel cache
+result; exact, malformed and mismatched snapshot paths; and absent, matching and conflicting config
+revision metadata. Syntax and whitespace checks passed, and independent review found no material defect.
+The local-only loaders remain in place. Luna verified Qwen3.5 `replay_model_loaded` at
+`2026-09-30T08:43:32Z`, after 114.61 seconds, using the exact pinned revision and 33 hidden states.
+The process remained active with 17,356 MiB GPU memory and no observed error. This confirms that the
+cache-completeness failure is resolved for real model loading. On 2026-09-30, the completed Qwen3.5, Ministral and Gemma artifacts were retrieved and verified:
+each has 181,584 prediction rows, 30 source refits, 90 probe arrays, zero convergence warnings and
+zero original-score parity mismatches. The driver exited successfully for all three. Local/remote
+checksums and input/selection provenance match. Evidence: ignored
+`gcp-workspace/rile-v2-source-matrix-resume-20260930T0840Z-retrieval/` model summaries, compressed
+predictions, probe archives and driver status. Together with the earlier OLMo result, all four source
+matrices are complete. This resolves the runtime failure; no scientific performance gain is claimed.
+
+## 2026-09-29 - CPU-helper SSH blocked pilot artifact retrieval (OPEN)
+
+**Issue:** The existing CPU helper started with the repaired L4 boot clone attached read-only, but its
+first IAP SSH attempt returned `4003: failed to connect to backend` before any mount or file read. The
+attempt was about 10–15 seconds after the helper start returned. The exact guest-side cause is unknown;
+early SSH service readiness is a hypothesis, not a confirmed diagnosis. Earlier IAP access to the same
+helper worked, and the effective firewall still permits TCP/22. Evidence: ignored
+`gcp-workspace/workspace_log.jsonl` and `gcp-workspace/workspace_sessions.csv`.
+
+**Impact:** The completed pilot's result JSON, layer agreement, and sampled memory measurements remain on
+the stopped disk and unverified locally. The helper retrieval session used 0.048571 CPU VM-hours and no
+GPU time. No RQ1/RQ2 scores were produced.
+
+**Fix and verification (OPEN):** The helper was stopped, and the clone was restored to the stopped L4 as
+its boot disk with `autoDelete=false`; the original disk remains untouched. A bounded retry after the
+helper has had time to boot, with live serial inspection, is pending fresh approval under the ignored
+`gcp-workspace/SKILL.md`. Both VMs were verified off; the pilot artifacts were not retrieved.
+
+## 2026-09-28 - Worker pilot stopped before SSH or model work (fixed 2026-09-29)
+
+**Issue:** An approved two-hour worker pilot first met a zone GPU stockout. A later start of the existing
+VM ended in a guest-initiated shutdown before SSH or model work. At discovery, the cause was unknown; an
+expired persistent timer was only a possible cause. See the ignored `gcp-workspace/` operation log and
+session and cost ledgers for the full infrastructure record.
+
+**Impact:** The worker pilot produced no model timing or scored RQ1/RQ2 evaluation. Its closed session
+recorded 0.033195 VM/GPU-hours. The VM was verified terminated; retained storage continues to bill.
+
+**Initial fix plan (SUPERSEDED):** Inspect the guest shutdown and timer state before another worker pilot.
+No repair resources were created in this attempt; the cause had not yet been established.
+
+**Verification:** The operation record shows the initial stockout and later guest-initiated shutdown;
+the session ledger records the elapsed VM/GPU-hours and terminated end state. There was no SSH or model
+work in the worker pilot.
+
+**Gain:** Recording the interrupted session separates its cost and missing timing evidence from the four
+completed diagnostic convergence pilots documented in `src/crosslingual-political-repr/docs/requirements.md`.
+
+**2026-09-29 diagnosis (FACT; fix OPEN):** Read-only inspection of an independent boot-disk clone found two
+enabled `Persistent=true` hard-stop timers with deadlines before the failed start. The guest journal records
+both timers and their power-off services starting before systemd shut down and GCE logged `guestTerminate`.
+This establishes the expired timers as the shutdown cause. The original VM and disk were not changed; the
+clone was not repaired. Evidence: ignored `gcp-workspace/rile-v2-offline-diagnosis-20260928/diagnostics.txt`
+and the closed helper session in `gcp-workspace/workspace_sessions.csv`.
+
+**2026-09-29 repair and verification (FACT):** On the clone, the two expired timer units were masked and
+the clone replaced the stopped VM's boot disk. The original disk remains untouched and unattached for
+rollback. A guest check found the timers masked and inactive; CUDA worked. The bounded English-only
+Ministral worker pilot then completed all 244 classifier fits with no convergence warnings. The L4 was
+stopped after the pilot, before its GCE-side two-hour STOP cap. The result JSON is still on the stopped
+boot disk, so layer agreement and memory measurements remain to be retrieved and checked. This repaired
+the premature shutdown; it did not produce RQ1/RQ2 evaluation scores. Evidence: ignored
+`gcp-workspace/workspace_log.jsonl`, `gcp-workspace/workspace_sessions.csv`, and the pilot's remote
+progress log recorded there.
+
+## 2026-09-27 - GPU driver unavailable after existing VM restart (fixed 2026-09-28)
+
+**Issue:** The existing GPU VM booted into a kernel without a matching NVIDIA module. The previously installed kernel has a matching driver module. See the ignored `gcp-workspace/` diagnostic record and session ledger from the bounded RILE-v2 pilot attempt.
+
+**Impact:** The corrected RILE-v2 convergence and timing pilot stopped before model loading or data processing. No GPU runtime or convergence result was produced.
+
+**Initial fix status:** Open at discovery. A one-time boot into an older installed kernel was the first repair candidate; the later verified fix is recorded below.
+
+**Verification:** The guest reported no NVIDIA module for its current kernel and `nvidia-smi` could not contact the driver. The VM was verified terminated after the diagnostic session. A separate CPU-only synthetic check exercised four grouped folds and four logistic fits; it does not measure the RILE data or GPU speed.
+
+**Gain:** The pilot cannot silently proceed without a working GPU, and its failed session is recorded in the infrastructure ledger.
+
+**2026-09-27 update — approved recovery failed:** One approved attempt to boot the already installed kernel with a matching driver used a one-time GRUB entry. Two guest reboots returned to the driverless kernel; the GPU checks still failed. The VM was stopped without transferring data or running a model. The default boot setting remained unchanged, but a pending one-time GRUB entry could not be cleared after SSH stopped responding. The next VM session must inspect that entry before another boot repair. See the ignored recovery diagnostics and closed infrastructure session ledger. The issue remains open.
+
+**2026-09-27 update — exact module has broader dependencies:** The pending one-time boot entry was clear on the next start. A read-only package-manager simulation found a module matching the active kernel, but installing it would also upgrade 16 existing NVIDIA packages and add a firmware package (18 package changes total, no removals). No package was installed because that transaction exceeded the approved narrow repair. The VM was verified terminated and the session closed in the ignored infrastructure ledger. The RILE-v2 GPU pilot remains unrun.
+
+**2026-09-28 fix and verification:** After a READY pre-change disk snapshot was created, the guest's unattended updater installed the matching NVIDIA driver stack. The agent did not invoke that package transaction. A reboot then made the L4 visible to `nvidia-smi`, and PyTorch reported CUDA available. Four bounded RILE-v2 convergence pilots subsequently completed on that GPU; see `src/crosslingual-political-repr/docs/requirements.md` for their diagnostic settings and results. The VM was stopped after automatic approval review rejected a longer timer for the separate full evaluation. The driver issue is fixed; the four-model evaluation remains pending.
+
+## 2026-09-27 - GPU capacity stockout delayed the recovery attempt (open)
+
+**Issue:** A start of the existing GPU VM failed because the zone had no available L4 capacity. See the ignored infrastructure operation log.
+
+**Impact:** The failure delayed the approved recovery and pilot; it did not run a VM or process data.
+
+**Fix:** A single retry after a ten-minute wait started the same VM. Future starts may still face a stockout, so capacity remains an open operational risk.
+
+**Verification:** The failed operation reported a stockout and the VM remained terminated; the later start reported the same VM running. The recovery session then ended with the VM verified terminated.
+
+**Gain:** No second VM or zone was used, and the failed start was recorded as zero running hours.
+
+## 2026-09-26 - RILE builder admitted excluded subcategories and duplicated texts (open)
+
+**2026-09-27 update — dataset candidate built:** `src/finalize_rile_translations.py --v2` produced
+`data/rile_v2/` from the finalized original file. The builder and sampler now reject exact CMP 202.2,
+605.2, and 703.2 before mapping to parent categories. The new candidate removes 30 invalid-code rows,
+both members of one conflicting duplicate pair, and one redundant member from each of four consistent
+pairs: 6,131 items remain (5,044 development, 1,087 category holdout). See the local manifest and
+`src/crosslingual-political-repr/docs/dataset_manifesto_rile.md` §13.2 for provenance. **Open:** new
+probe scores, convergence, tone and lexical controls, and category-versus-document evaluation design.
+
+**Issue:** The current RILE file has 30 items drawn from CMP subcategories 202.2 (one left item) and 605.2
+(29 right items), which the MPDS2024a RILE definition excludes. The builder at
+`src/crosslingual-political-repr/src/build_rile_set.py:49-55` strips the subcategory suffix before checking
+membership, while the sampler at `src/crosslingual-political-repr/src/sample_corpus.py:37-50` can keep those rows. A
+normalized exact-text audit also found duplicate groups across languages and development/heldout boundaries,
+including one English text with conflicting CMP 407/107 labels. Evidence: the final local dataset audit;
+the authoritative definition is the [MPDS2024a codebook](https://manifesto-project.wzb.eu/down/data/2024a/codebooks/codebook_MPDataset_MPDS2024a.pdf),
+pp. 10 and 30.
+
+**Impact:** The current 6,167-row file, its tone check, and its activation scores are provisional. Mapping-only
+exclusion implies 6,137 rows, but duplicate handling may change that count. The category-heldout split shares
+manifestos with development, so it cannot support an unseen-manifesto claim. Development CV does exclude
+manifesto IDs across folds, but nine parties recur across separate manifestos in different folds, so it does
+not establish unseen-party generalization. Duplicate groups also cross development folds and must be resolved
+before interpreting CV as leakage-free. Previously inspected heldout scores are exploratory.
+
+**Proposed fix:** Build a separately versioned dataset excluding the invalid subcategories, preserving valid
+translations and prior approved drops, and resolve exact duplicates as groups before assigning evaluation
+folds. Recompute counts and tone diagnostics. Use nested manifesto-grouped development evaluation for layer
+selection, then a clearly labeled category-heldout robustness check. A genuinely untouched confirmation would
+require reserved source documents before model and analysis choices are frozen.
+
+**Verification:** The corrected dataset candidate is built and checked against its source: 6,131 retained
+rows, six nonempty aligned texts per row, metadata and texts unchanged for retained IDs, no excluded
+subcodes or normalized duplicate texts in any language, and both prior drops absent. RILE-v1 source remains
+unchanged. No corrected evaluation has run; its score and tone issues remain OPEN. The 6,137 figure is only
+the mapping-only intermediate count.
+
+**Gain:** Recording the mapping and split limitations prevents current diagnostic scores from being described
+as clean confirmatory evidence.
+
+## 2026-09-16 - Spanish tone-matching passed only after changing the matching model (open caveat)
+
+**Issue:** The Manifesto Spanish RILE set, tone-matched on `cardiffnlp/twitter-xlm-roberta-base-sentiment` like English and German, failed the pre-declared validator gate: worst independent validator 0.051 against a 0.05 threshold, with `nlptown` at 0.551 and `pysentimiento/robertuito-sentiment-analysis` at 0.537, both above chance in the same direction. Rebuilding matched on robertuito instead passes at 0.047.
+
+**Impact:** Two consequences, both reportable. The pipeline is no longer uniform across languages: English and German match on cardiff, Spanish on robertuito. And the passing margin is thin (0.047 against 0.05), on the smallest set (2,153 per side).
+
+**Fix:** Added `--match-model` to `src/build_rile_set.py` so the matching model can be one competent in the target language. Spanish is built with `--match-model spanish`.
+
+**Verification:** Gate after rebuild: robertuito 0.499 (matched on), cardiff 0.453, nlptown 0.517, xlmr_multi 0.464; worst independent deviation 0.047. English (0.019) and German (0.006) pass matched on cardiff.
+
+**Gain:** None claimed. This is recorded as an open caveat. Both the failing cardiff-matched result and the passing robertuito-matched result belong in any writeup; reporting only the second would be selection.
+
+## 2026-09-16 - Tone scoring truncated every model at 512 tokens
+
+**Issue:** `src/tone.py::score_texts` passed a fixed `max_length=512`. `pysentimiento/robertuito-sentiment-analysis` has `max_position_embeddings` 130, so scoring raised `RuntimeError: index 130 is out of bounds for dimension 1 with size 130`.
+
+**Impact:** The Spanish validator gate aborted partway, after scoring two of four models.
+
+**Fix:** Cap per model at `min(512, max_position_embeddings - 2)`, leaving room for the special tokens that RoBERTa-family position offsets consume.
+
+**Verification:** The Spanish gate then completed across all four models. No English or German number changed, since those models have 512 positions.
+
+**Gain:** Tone models with short contexts work without special-casing.
+
+## 2026-09-16 - Country is not language: a third of the Spanish set was Catalan
+
+**Issue:** Manifesto country codes select countries, not languages. Country 33 (Spain) includes Catalan, Valencian and Galician parties. `langdetect` over the built Spanish set found 1,906 of 6,010 sentences (31.7%) were Catalan, mostly from Catalan Republican Left (707, 0% Spanish), In Common We Can (714, 0%) and Together for Catalonia (492, 1%), plus 55 Portuguese/Galician. The English set contained 44 French sentences from Bloc Quebecois (0.8%); German was 99.8% clean.
+
+**Impact:** Language is the variable under test in a cross-lingual transfer experiment, so a third of one language's data being a different language would have confounded the result.
+
+**Fix:** Added a seeded per-sentence `langdetect` filter to `src/build_rile_set.py`, applied before capping and tone-matching so class balance still holds afterwards.
+
+**Verification:** Filter kept 37,576 of 37,883 (en), 18,149 of 18,178 (de), 7,136 of 10,463 (es). Rebuilt matched sets: en 6,197 per side, de 5,339, es 2,153.
+
+**Gain:** Each language set now contains one language. Spanish is a third smaller, which is the honest size of the usable Spanish data.
+
+## 2026-09-16 - Left/right keying was invented before being checked against the codebook
+
+**Issue:** The first Manifesto design keyed left versus right from opposing category pairs (601/602, 603/604, 203/204, 701/702) on recalled knowledge of the RILE index. The Manifesto Project Dataset codebook (MPDS2024a, s3.6 "Programmatic dimensions", p.30) defines RILE as an additive index over specific categories, and 602, 604, 204 and 702 appear in neither the right nor the left list.
+
+**Impact:** Four of the six planned issue pairs would have been keyed on a scheme of our own invention while being described as standard. Caught before any probe was trained.
+
+**Fix:** Adopted the verified formula, quoted in the `src/build_rile_set.py` docstring, and dropped categories outside it.
+
+**Verification:** Category counts recomputed under the verified lists: 16,866 right and 21,017 left sentences across 40 English manifestos, with 29,705 usable sentences falling outside RILE entirely.
+
+**Gain:** The axis matches a published, externally defined index instead of a keying we chose.
 
 ## 2026-09-01 - Surface-text controls were pooled and interpreted incorrectly
 
@@ -391,3 +599,26 @@ Last updated: 2026-09-01
 **Verification:** A second static code review confirmed both fixes and found no further instance of the same class of bug; the corrected script then ran to completion with zero errors and an exact, independently verified output record count.
 
 **Gain:** GPU time is no longer spent running code that has not been checked for this class of defect, and a crash partway through a long run no longer discards completed work.
+
+
+## 2026-09-30 - RILE text-control compatibility and stdout logging
+
+**FACT — Issue:** The older text-surface-control script targets an earlier survey cohort and split procedure. Its saved results and accuracy metric do not supply the matched RILE v2 manifesto-fold comparison. This is a compatibility issue for the new dataset, not a finding that the older survey split was incorrect. Sources: [older runner](../src/crosslingual-political-repr/src/run_text_surface_controls.py); [RILE control runner](../src/crosslingual-political-repr/src/run_rile_text_controls.py).
+
+**FACT — Impact and fix:** Added a separate small RILE runner using the exact saved OLMo item-to-fold map, source-training-only TF-IDF/scaling, and pooled balanced accuracy; the old study script remains unchanged. The fixed run contains character 3–5-grams, word 1–2-grams with language-specific preprocessing, and 11 length/final-punctuation features. Sources: [run summary](../gcp-workspace/rile_v2_text_controls/full-20260930-luna/summary.json); [dataset report §15](../src/crosslingual-political-repr/docs/dataset_manifesto_rile.md).
+
+**FACT — Verification and gain:** The 90 fits completed with no convergence warnings. The 108 cells each contain 5,044 unique aligned items from 66 manifesto groups; bootstrap cell point checks match summaries to 1e-12. Saved predictions provide matched lexical/surface measurements on the existing RILE folds. Sources: [run summary](../gcp-workspace/rile_v2_text_controls/full-20260930-luna/summary.json); [bootstrap runner](../src/crosslingual-political-repr/src/bootstrap_rile_text_controls.py); [bootstrap results](../gcp-workspace/rile_v2_text_controls/full-20260930-luna-bootstrap/bootstrap_results.json).
+
+**OPEN — Terminal-token identity:** The older scalar numeric token-ID control treats token identifiers as ordered quantities. It was excluded from this RILE run; categorical token identity with separately defined tokenization has not been implemented or evaluated. Source: [older runner](../src/crosslingual-political-repr/src/run_text_surface_controls.py).
+
+**LIMITATION — Stdout log:** A full-run `tee` log attempt targeted a missing parent directory and did not save a persistent stdout log. Live completion output was observed; the completed summary retains per-fit records, iterations, warnings, runtime, and prediction hashes. No rerun was performed solely for logging. **OPEN mitigation:** Create the destination parent before a future `tee` invocation. This mitigation was recorded, not retroactively tested. Source: [run summary](../gcp-workspace/rile_v2_text_controls/full-20260930-luna/summary.json).
+
+## 2026-09-30 - Category-holdout GPU transfer approval (open)
+
+**OPEN — Issue (2026-09-30):** Automatic approval review rejected the proposed SCP export of nonpublic code, translated statements, predictions, and fitted probes because the existing task authorization did not explicitly authorize that export. Source: automatic approval review response in the current work session (2026-09-30).
+
+**INCOMPLETE — Impact (2026-09-30):** The four GPU model evaluations have not launched. No bundle transfer or workaround occurred; the category-holdout campaign remains partial, with only the three CPU controls completed. Sources: current work-session execution record (2026-09-30); [partial bootstrap JSON](../gcp-workspace/rile_v2_category_holdout/bootstrap-controls-only-20260930-luna/PARTIAL_controls_only_bootstrap.json) (`status=PARTIAL_CONTROLS_ONLY`, `families`).
+
+**OPEN — Mitigation (2026-09-30):** The owner subsequently explicitly authorized the private transfer and evaluation after the push to main. The prepared bundle is retained for that sequence; execution remains unverified, so this issue is not recorded as fixed. Source: current work-session approval request and subsequent owner authorization (2026-09-30).
+
+**FACT — Completed verification and gain (2026-09-30):** The CPU evaluation finished in 36.351 seconds with 90 frozen-fit hash matches and zero fit warnings. Each control saved 39,132 predictions, with 1,087 unique aligned items per cell. The partial analysis checked 108 holdout and 108 full-development cell points against summaries to 1e-12, then recomputed development on the same 58 documents (4,901 items) for descriptive paired-bootstrap differences. These saved controls provide an auditable partial result while GPU execution is blocked. Sources: [CPU summary](../gcp-workspace/rile_v2_category_holdout/full-20260930-luna/controls/summary.json); [partial bootstrap JSON](../gcp-workspace/rile_v2_category_holdout/bootstrap-controls-only-20260930-luna/PARTIAL_controls_only_bootstrap.json); [dataset report §16](../src/crosslingual-political-repr/docs/dataset_manifesto_rile.md).
