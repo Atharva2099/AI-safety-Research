@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Last updated: 2026-09-17
+Last updated: 2026-10-01
 
 Instructions for AI coding agents (Claude Code, Cursor, etc.) working in this repo. **Read this fully before doing anything.** The rules here override your defaults.
 
@@ -87,7 +87,7 @@ Notes are for the owner. Code is for the owner to run and tweak. Do not:
 
 - All new or modified Markdown documentation must include `Last updated: YYYY-MM-DD` under its title.
 - Never commit PII or sensitive operational data anywhere in the repository. This includes names, email addresses, phone numbers, IP addresses, API keys, access tokens, passwords, private keys, service-account details, cloud project/account identifiers, VM or storage identifiers, private URLs, and raw records containing personal data.
-- Apply the same rule to `docs/bugs-squashed.md`: describe infrastructure or reproducibility failures with redacted resource names and identifiers unless the owner explicitly approves a specific identifier. Keep full infrastructure records only in the ignored `gcp-workspace/` directory.
+- Apply the same rule to `docs/bugs-squashed.md`: describe infrastructure or reproducibility failures with redacted resource names and identifiers unless the owner explicitly approves a specific identifier. Keep full infrastructure records only in `~/Desktop/gcp-workspace/` (outside the repo).
 - Use neutral, factual language. State the dataset, prompt, metric, sample size, and observed value before interpretation.
 - Do not claim a model, dataset, or technique is good, bad, broken, unsafe, or a breakthrough unless the evidence directly supports that narrow claim.
 - Separate measured results from hypotheses, limitations, and next questions.
@@ -232,27 +232,27 @@ Surfaced ideas the owner may pick up later. Agents: don't act on these unprompte
 
 ### Google Cloud Workspace
 
-`gcp-workspace/` is local-only infrastructure state and must not be committed. Before any Google Cloud, Compute Engine, GPU, storage, backup, migration, startup, shutdown, or other infrastructure operation:
+The GCP operating pack lives outside this repo at `~/Desktop/gcp-workspace/` (moved 2026-10-01, shared with `~/Desktop/Cross-Lingual-Probes/`). The local `gcp-workspace/` folder holds only ignored run results. Before any Google Cloud, Compute Engine, GPU, storage, backup, migration, startup, shutdown, or other infrastructure operation:
 
-1. Read `gcp-workspace/SKILL.md`.
-2. Read `gcp-workspace/infrastructure_manifest.json`.
-3. Read `gcp-workspace/workspace_state.md`.
-4. Read the most recent entries in `gcp-workspace/workspace_log.jsonl`.
-5. Read open/recent entries in `gcp-workspace/workspace_sessions.csv` and `gcp-workspace/workspace_cost_ledger.csv`.
+1. Read `~/Desktop/gcp-workspace/SKILL.md`.
+2. Read `~/Desktop/gcp-workspace/infrastructure_manifest.json`.
+3. Read `~/Desktop/gcp-workspace/workspace_state.md`.
+4. Read the most recent entries in `~/Desktop/gcp-workspace/workspace_log.jsonl`.
+5. Read open/recent entries in `~/Desktop/gcp-workspace/workspace_sessions.csv` and `~/Desktop/gcp-workspace/workspace_cost_ledger.csv`.
 6. Compare the recorded state with live GCP resources before making changes.
 
-`gcp-workspace/SKILL.md` is mandatory for infrastructure work. It governs discovery, resource reuse, explicit approval, backups, migrations, startup, shutdown, cleanup, security, and cost tracking.
+`~/Desktop/gcp-workspace/SKILL.md` is mandatory for infrastructure work. It governs discovery, resource reuse, explicit approval, backups, migrations, startup, shutdown, cleanup, security, and cost tracking.
 
 Do not create a VM before checking existing resources. Do not run multiple GPU VMs without explicit approval. Do not delete or overwrite cloud resources without explicit approval. Do not expose credentials, SSH keys, `.env` contents, or secret files. Do not repeat timed-out lifecycle commands blindly. Do not leave GPU VMs running after work is complete.
 
-After every verified infrastructure operation, update `gcp-workspace/workspace_state.md`, append one valid JSON record to `gcp-workspace/workspace_log.jsonl`, update applicable session/cost ledgers, and report running resources plus ongoing cost drivers.
+After every verified infrastructure operation, update `~/Desktop/gcp-workspace/workspace_state.md`, append one valid JSON record to `~/Desktop/gcp-workspace/workspace_log.jsonl`, update applicable session/cost ledgers, and report running resources plus ongoing cost drivers.
 
 **Which model runs GCP work:** a Sonnet agent handles GCP server management, not the root (Opus) session.
 
 - **Read-only checks** (VM status, disk usage, `nvidia-smi`, reading run logs, cost-ledger review) go to `escalation-worker` (Sonnet).
-- **Actions** (start/stop VMs, copying files to or from the VM, launching extraction jobs, updating the `gcp-workspace/` ledgers) go to `builder` (Sonnet). Only one such agent at a time.
+- **Actions** (start/stop VMs, copying files to or from the VM, launching extraction jobs, updating the `~/Desktop/gcp-workspace/` ledgers) go to `builder` (Sonnet). Only one such agent at a time.
 - The root session plans the run, writes the pre-run card, and gets the owner's go-ahead. The Sonnet agent then executes. Every handoff must include:
-  - this section and `gcp-workspace/SKILL.md`;
+  - this section and `~/Desktop/gcp-workspace/SKILL.md`;
   - the exact commands or job to run;
   - the owner's approval for any start, stop, create, or delete;
   - the completion criteria.
@@ -288,4 +288,4 @@ After every verified infrastructure operation, update `gcp-workspace/workspace_s
 4. End goal is **competence + cold emails**, not a published artifact.
 5. Don't create files unprompted. Don't pad with polish.
 6. Use `uv`. Respect the current roadmap phase.
-7. Read and follow `gcp-workspace/SKILL.md` before any infrastructure action.
+7. Read and follow `~/Desktop/gcp-workspace/SKILL.md` before any infrastructure action.
