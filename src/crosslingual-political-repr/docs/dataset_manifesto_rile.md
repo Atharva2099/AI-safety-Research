@@ -1229,3 +1229,45 @@ UV_CACHE_DIR=/tmp/rile-text-control-uvcache uv run --offline --with numpy==2.5.3
 | Shared bootstrap weights | `79c7a1c5c773416669b04732012c80baf59c80e055ebfb843a272a6a94e24341` |
 
 **FACT (2026-09-30):** All seven full matrices, source/target means, cellwise cohort differences, and probe-minus-control differences are retained in the numerical artifact. Sources: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families`, `probe_minus_control`); [complete HTML matrices](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/tables.html). Earlier failed diagnostics were preserved; recorded issue closures are in [bugs-squashed](../../../docs/bugs-squashed.md).
+
+### 16.8 Category errors and paired model disagreements (2026-09-30)
+
+**FACT (2026-09-30):** This CPU-only analysis uses the frozen four-model predictions for 1,087 items in 36 source–target cells. It rechecked all 144 balanced-accuracy points against both model summaries and the seven-family bootstrap JSON within 1e-12, verified prediction/input hashes, item/manifesto/fold/label/category coverage, and each saved selected layer. The 10,000 shared 58-manifesto bootstrap weights (seed 20260930) matched the upstream SHA-256 `79c7a1c5c773416669b04732012c80baf59c80e055ebfb843a272a6a94e24341`; zero draws were discarded. All four categories had 10,000 valid draws. A three-draw fixture with one absent-category draw verified that the percentile interval uses only valid draws. The repaired CPU run took 2.02 seconds. Sources: [repaired error-analysis JSON](../../../gcp-workspace/rile_v2_category_holdout/error-analysis-20260930-luna-repaired/error_analysis.json) (`method`, `provenance`, `categories`); [analysis runner](../src/analyze_rile_holdout_errors.py); [frozen model summaries](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/).
+
+**FACT / METRIC DEFINITION (2026-09-30):** Each category has only one category-derived label, so the category metric is the pooled fraction correct relative to that label, not balanced accuracy. The table's cross-language estimate averages the 30 off-diagonal source–target cell fractions; the denominator is 30 × the category item count. The error-share column is that category's wrong cross-language item-cell predictions divided by the model's total wrong predictions across all 1,087 items × 30 cells. Items recur across language cells, so these counts are repeated predictions, not independent item observations. Brackets give pointwise 95% percentile intervals using the shared manifesto draws.
+
+| Category | Items (share of holdout) | Model | Cross-language correct % [95% interval] | Wrong predictions / category cross predictions | Share of model cross errors |
+|---|---:|---|---:|---:|---:|
+| 107 | 287 (26.4%) | OLMo | 48.25 [46.50, 49.81] | 4,456 / 8,610 | 27.1% |
+| 107 | 287 (26.4%) | Qwen3.5 | 37.24 [34.35, 40.15] | 5,404 / 8,610 | 34.4% |
+| 107 | 287 (26.4%) | Ministral | 48.11 [46.22, 49.77] | 4,468 / 8,610 | 28.7% |
+| 107 | 287 (26.4%) | Gemma | 50.65 [48.04, 53.75] | 4,249 / 8,610 | 30.2% |
+| 506 | 306 (28.2%) | OLMo | 48.93 [47.37, 50.37] | 4,688 / 9,180 | 28.5% |
+| 506 | 306 (28.2%) | Qwen3.5 | 38.25 [36.23, 40.39] | 5,669 / 9,180 | 36.1% |
+| 506 | 306 (28.2%) | Ministral | 43.78 [41.53, 46.14] | 5,161 / 9,180 | 33.1% |
+| 506 | 306 (28.2%) | Gemma | 52.98 [50.69, 55.42] | 4,316 / 9,180 | 30.7% |
+| 601 | 271 (24.9%) | OLMo | 51.06 [48.53, 53.96] | 3,979 / 8,130 | 24.2% |
+| 601 | 271 (24.9%) | Qwen3.5 | 68.87 [65.82, 72.74] | 2,531 / 8,130 | 16.1% |
+| 601 | 271 (24.9%) | Ministral | 59.16 [56.56, 60.69] | 3,320 / 8,130 | 21.3% |
+| 601 | 271 (24.9%) | Gemma | 62.61 [57.47, 65.72] | 3,040 / 8,130 | 21.6% |
+| 603 | 223 (20.5%) | OLMo | 50.01 [46.16, 55.06] | 3,344 / 6,690 | 20.3% |
+| 603 | 223 (20.5%) | Qwen3.5 | 68.65 [64.99, 73.85] | 2,097 / 6,690 | 13.4% |
+| 603 | 223 (20.5%) | Ministral | 60.51 [57.66, 62.84] | 2,642 / 6,690 | 16.9% |
+| 603 | 223 (20.5%) | Gemma | 63.35 [60.21, 65.41] | 2,452 / 6,690 | 17.4% |
+
+**FACT (2026-09-30):** Paired disagreement is the fraction of aligned item predictions on which two models output different labels, summarized across the 30 cross-language cells. Since the task is binary and both models use the same reference label, disagreement is also the fraction where exactly one of the pair is correct. The intervals use shared manifesto resampling and the weighted item count for each draw.
+
+| Model pair | Cross-language disagreement % [95% interval] |
+|---|---:|
+| OLMo vs Qwen3.5 | 49.05 [47.31, 51.14] |
+| OLMo vs Ministral | 46.31 [43.90, 48.68] |
+| OLMo vs Gemma | 49.25 [48.38, 50.07] |
+| Qwen3.5 vs Ministral | 44.59 [43.53, 45.73] |
+| Qwen3.5 vs Gemma | 45.68 [44.63, 46.90] |
+| Ministral vs Gemma | 47.63 [46.80, 48.53] |
+
+**FACT (2026-09-30):** For the exhaustive four-model partition across category items × 36 cells, unanimous-correct / unanimous-wrong / three-to-one / two-to-two counts were: category 107, 682 / 1,169 / 5,102 / 3,379; 506, 663 / 1,114 / 5,597 / 3,642; 601, 1,800 / 349 / 4,719 / 2,888; and 603, 1,473 / 280 / 3,882 / 2,393. The repaired output adds four category-specific 6×6 partition matrices and their 36-cell, diagonal-6-cell, and cross-language-30-cell totals. For every cell, the four counts sum to that category's item count; diagonal and cross-language totals sum to 6× and 30× that count, respectively. The full category and disagreement matrices, aggregates, row-level text-free review candidates, and provenance are in the [repaired HTML tables](../../../gcp-workspace/rile_v2_category_holdout/error-analysis-20260930-luna-repaired/tables.html), [JSON](../../../gcp-workspace/rile_v2_category_holdout/error-analysis-20260930-luna-repaired/error_analysis.json), and [compressed candidate rows](../../../gcp-workspace/rile_v2_category_holdout/error-analysis-20260930-luna-repaired/manual_review_candidates.jsonl.gz). The candidate file has 34,514 rows and contains IDs, categories, folds, language pairs, and correctness flags, with no statement text. The first-pass output remains preserved in the sibling `error-analysis-20260930-luna/` folder.
+
+**FACT (2026-09-30):** Repaired script SHA-256 is `716f3b0da3b646b1e494f1525ad041b6b0b548864a428abb4d83fd12b0097cf1`; repaired JSON SHA-256 is `2160e133e4150961d9eb0b4741bc490fb8beada77a327192d1b68cbb545efa6a`.
+
+**LIMITATION (2026-09-30):** These are descriptive, fixed-category results conditional on saved probes, selected layers, and folds. Intervals are pointwise, not multiplicity-adjusted; repeated language-cell predictions are not independent samples. They support no significance, causal, model-ranking, sentence-level ideology, party-independence, or category-population inference. Sources: [repaired error-analysis JSON](../../../gcp-workspace/rile_v2_category_holdout/error-analysis-20260930-luna-repaired/error_analysis.json) (`method.limitations`, `categories`, `pairwise_model_disagreement`, `four_model_correctness_partitions`, `four_model_correctness_partitions_by_category`).
