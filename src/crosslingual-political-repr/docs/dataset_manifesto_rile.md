@@ -1038,3 +1038,194 @@ UV_CACHE_DIR=/tmp/rile-text-control-uvcache uv run --offline --with numpy==2.5.3
 **FACT / REPAIR RECORDED (2026-09-30):** The evaluator now resolves each original selection summary from the replay's recorded basename, verifies its SHA-256 against the frozen replay summary, validates model/dataset/protocol/development count, and requires the recorded positive integer batch size to be 8. It uses that setting for extraction and records the selection path/hash and batch size in output provenance, including failed-run summaries. The first eight original-order development rows now occupy one batch of eight. Source: [evaluation runner](../src/evaluate_rile_category_holdout.py) (`selection_config`, `model_run`, `main`).
 
 **HYPOTHESIS / OPEN (2026-09-30):** The batch-size mismatch may explain the margin failure; that explanation has not been confirmed by a GPU parity rerun. The repair changes no selected layer, fitted probe, fold, label, threshold, feature precision, or tolerance (`atol=0.001`, `rtol=0.0001`, exact predictions). Local checks verified all four original selection-summary hashes and batch settings, rejected model/count/hash mismatches, parsed the repaired script, and confirmed CPU imports leave Torch unloaded. GPU verification remains pending; a repaired smoke must pass before any full model evaluation is accepted. Sources: [evaluation runner](../src/evaluate_rile_category_holdout.py); original selection summaries cited above; current work-session local-check record (2026-09-30); [open parity issue](../../../docs/bugs-squashed.md#2026-09-30---category-holdout-development-parity-and-batch-size-open).
+
+### 16.7 Completed seven-family category holdout (2026-09-30)
+
+**FACT / COMPLETED (2026-09-30):** The four corrected model smokes and full evaluations completed, and their predictions were combined with the three completed CPU controls. This complete result supersedes the campaign-status snapshots in §§16.1, 16.5, and 16.6; those partial results and failed-run records remain historical evidence. Each of the seven families has 36 source–target cells, 1,087 items per cell, and 39,132 predictions. The cohort contains 593 label-0 and 494 label-1 items from 58 manifestos and the four fixed excluded categories 107, 506, 601, and 603. Sources: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method`, `families`, `provenance`); [OLMo full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/OLMo/summary.json); [Qwen3.5 full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Qwen3.5/summary.json); [Ministral full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Ministral/summary.json); [Gemma full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Gemma/summary.json); [corrected driver status](../../../gcp-workspace/rile_v2_category_holdout/diagnostic-batch8-20261001-luna/driver_status_batch8_v4.tsv).
+
+**FACT / FROZEN METHOD (2026-09-30):** Every item uses only its manifesto-excluding fold classifier, with the saved source-language-selected layer and probe parameters unchanged. The five probes are not ensembled; no holdout refitting, layer selection, or tuning was performed. Character/word/surface controls reuse the exact reproduced frozen development fits. Sources: [evaluation runner](../src/evaluate_rile_category_holdout.py) (`model_run`, `control_run`); [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method.document_exclusion`, `conditional_on`); [CPU control summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/controls/summary.json) (`fits`).
+
+**FACT (2026-09-30):** Balanced accuracy is the mean of the two pooled class recalls within a cell. Tables report percent [pointwise 95% percentile interval], rounded to two decimals. The analysis used 10,000 draws of 58 manifestos with replacement, seed 20260930, with shared weights across all families, translations, and both cohorts; zero draws lacked a class. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method`, `families.*.holdout.matrix`).
+
+#### OLMo: held-out source–target matrix (2026-09-30)
+
+**FACT (2026-09-30):** Rows are training source languages; columns are evaluation target languages. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families.OLMo.holdout.matrix`).
+
+| Source → target | en | es | de | zh | hi | mr |
+|---|---|---|---|---|---|---|
+| en | 56.08 [53.17, 59.12] | 50.36 [46.19, 53.95] | 51.17 [49.42, 52.96] | 46.53 [41.27, 51.27] | 48.46 [41.95, 54.59] | 48.88 [42.43, 54.60] |
+| es | 49.94 [45.71, 55.25] | 55.14 [52.37, 57.99] | 49.49 [45.52, 53.67] | 43.41 [39.03, 49.00] | 46.40 [38.59, 57.73] | 51.91 [44.22, 61.33] |
+| de | 58.31 [52.45, 62.76] | 50.29 [46.81, 54.97] | 54.18 [50.10, 57.86] | 53.31 [47.74, 57.61] | 46.55 [41.24, 54.12] | 48.49 [44.25, 52.85] |
+| zh | 52.71 [49.48, 55.86] | 51.60 [44.20, 57.42] | 49.25 [43.75, 53.26] | 56.84 [54.33, 59.39] | 55.02 [42.60, 64.50] | 54.56 [44.21, 62.21] |
+| hi | 48.46 [42.68, 55.47] | 47.92 [41.05, 56.71] | 43.62 [35.33, 55.39] | 45.88 [41.10, 52.50] | 52.84 [48.64, 56.06] | 47.21 [40.05, 57.09] |
+| mr | 49.69 [45.51, 54.50] | 50.67 [43.41, 56.62] | 45.90 [40.81, 51.68] | 50.11 [46.04, 53.55] | 51.73 [46.32, 56.81] | 51.07 [48.57, 53.83] |
+
+#### Qwen3.5: held-out source–target matrix (2026-09-30)
+
+**FACT (2026-09-30):** Rows are training source languages; columns are evaluation target languages. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families.Qwen3.5.holdout.matrix`).
+
+| Source → target | en | es | de | zh | hi | mr |
+|---|---|---|---|---|---|---|
+| en | 61.97 [58.77, 65.45] | 59.25 [53.37, 64.29] | 50.30 [46.58, 53.86] | 56.00 [53.85, 58.13] | 58.42 [50.79, 64.81] | 50.23 [46.46, 53.53] |
+| es | 58.36 [54.55, 62.23] | 57.50 [53.35, 61.09] | 56.71 [52.32, 60.67] | 53.25 [46.91, 60.91] | 51.11 [46.11, 56.08] | 51.52 [49.86, 53.46] |
+| de | 50.70 [45.31, 58.11] | 42.17 [34.84, 52.43] | 56.56 [53.61, 59.52] | 60.70 [54.72, 67.07] | 55.53 [48.75, 63.59] | 50.64 [48.51, 53.15] |
+| zh | 58.17 [51.64, 64.29] | 47.29 [36.60, 59.26] | 51.43 [48.79, 53.98] | 58.76 [54.66, 62.09] | 55.63 [49.68, 60.42] | 50.84 [45.07, 55.75] |
+| hi | 53.99 [46.26, 62.89] | 51.00 [40.99, 63.79] | 48.81 [40.41, 58.66] | 58.62 [51.79, 65.92] | 49.12 [46.28, 51.80] | 47.41 [41.25, 55.81] |
+| mr | 51.58 [46.38, 56.54] | 59.74 [53.12, 65.27] | 46.48 [42.05, 51.61] | 55.75 [49.85, 61.28] | 56.30 [51.78, 59.95] | 51.39 [48.68, 54.63] |
+
+#### Ministral: held-out source–target matrix (2026-09-30)
+
+**FACT (2026-09-30):** Rows are training source languages; columns are evaluation target languages. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families.Ministral.holdout.matrix`).
+
+| Source → target | en | es | de | zh | hi | mr |
+|---|---|---|---|---|---|---|
+| en | 57.52 [54.54, 60.45] | 60.07 [55.18, 65.31] | 56.45 [48.77, 62.79] | 56.60 [49.67, 65.80] | 47.44 [39.62, 55.87] | 56.96 [45.45, 65.73] |
+| es | 57.09 [52.91, 60.89] | 57.33 [53.72, 60.47] | 51.27 [45.96, 58.15] | 49.95 [47.06, 52.51] | 45.13 [41.23, 49.30] | 46.01 [39.99, 54.36] |
+| de | 54.26 [51.29, 57.06] | 52.78 [50.24, 55.36] | 54.90 [51.82, 57.35] | 57.19 [52.09, 61.24] | 47.65 [42.79, 53.85] | 53.22 [49.53, 56.45] |
+| zh | 52.22 [50.54, 54.33] | 50.89 [48.83, 53.45] | 50.81 [49.23, 52.72] | 59.95 [55.52, 63.71] | 58.83 [50.71, 64.84] | 52.12 [50.44, 53.83] |
+| hi | 49.99 [46.13, 54.22] | 49.30 [43.57, 53.95] | 51.04 [45.17, 55.52] | 57.97 [53.66, 63.86] | 56.96 [53.82, 60.72] | 51.26 [45.83, 55.83] |
+| mr | 54.45 [48.67, 58.74] | 55.48 [50.32, 60.05] | 56.08 [50.24, 60.53] | 53.23 [47.27, 59.01] | 48.93 [44.70, 53.30] | 53.86 [50.47, 56.76] |
+
+#### Gemma: held-out source–target matrix (2026-09-30)
+
+**FACT (2026-09-30):** Rows are training source languages; columns are evaluation target languages. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families.Gemma.holdout.matrix`).
+
+| Source → target | en | es | de | zh | hi | mr |
+|---|---|---|---|---|---|---|
+| en | 62.47 [59.52, 65.16] | 54.78 [50.62, 59.46] | 59.27 [54.78, 62.66] | 57.67 [54.40, 62.45] | 53.64 [47.23, 59.51] | 55.47 [49.16, 61.40] |
+| es | 59.03 [55.53, 62.26] | 60.65 [57.31, 63.95] | 51.53 [47.31, 56.62] | 61.45 [55.79, 66.16] | 58.19 [53.70, 61.70] | 57.15 [52.42, 61.12] |
+| de | 55.48 [53.19, 58.35] | 56.10 [50.57, 62.03] | 59.12 [55.75, 61.96] | 60.04 [56.72, 63.31] | 59.17 [56.19, 61.89] | 57.74 [54.07, 61.76] |
+| zh | 63.03 [59.39, 66.61] | 59.15 [53.53, 64.65] | 59.75 [54.15, 64.73] | 60.50 [57.40, 63.52] | 60.59 [55.08, 64.58] | 55.03 [51.55, 59.47] |
+| hi | 60.49 [55.06, 64.66] | 59.86 [51.48, 66.17] | 64.18 [56.35, 69.91] | 59.10 [54.23, 62.76] | 58.54 [55.08, 62.04] | 53.32 [46.68, 59.08] |
+| mr | 55.65 [51.99, 60.27] | 55.51 [51.37, 59.93] | 56.69 [49.86, 61.80] | 51.29 [47.10, 56.51] | 51.65 [47.62, 57.07] | 56.08 [52.85, 59.30] |
+
+#### Character control: held-out source–target matrix (2026-09-30)
+
+**FACT (2026-09-30):** Rows are training source languages; columns are evaluation target languages. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families.char.holdout.matrix`).
+
+| Source → target | en | es | de | zh | hi | mr |
+|---|---|---|---|---|---|---|
+| en | 51.41 [48.45, 54.88] | 49.77 [45.84, 54.18] | 50.93 [47.71, 53.45] | 50.57 [49.52, 51.66] | 50.69 [49.18, 51.96] | 50.44 [48.34, 52.02] |
+| es | 50.91 [47.73, 53.72] | 54.90 [52.21, 58.23] | 46.99 [42.87, 52.01] | 50.56 [49.93, 51.19] | 50.91 [49.91, 52.01] | 50.59 [49.52, 51.48] |
+| de | 50.77 [46.97, 53.85] | 49.81 [45.38, 54.82] | 49.37 [46.24, 52.70] | 50.71 [49.85, 51.77] | 50.84 [49.66, 52.17] | 50.96 [49.83, 52.04] |
+| zh | 42.41 [33.92, 54.32] | 45.90 [37.54, 57.48] | 41.87 [35.14, 50.28] | 51.39 [46.13, 56.70] | 38.64 [28.49, 53.54] | 36.45 [24.87, 53.09] |
+| hi | 52.07 [47.51, 56.99] | 50.13 [49.83, 50.42] | 49.43 [48.01, 51.10] | 50.07 [49.79, 50.38] | 51.82 [48.06, 54.79] | 54.94 [52.64, 57.14] |
+| mr | 49.07 [47.82, 50.47] | 49.46 [48.77, 50.29] | 48.92 [47.37, 50.38] | 49.48 [48.82, 50.41] | 46.23 [42.27, 51.62] | 50.62 [47.06, 53.99] |
+
+#### Word control: held-out source–target matrix (2026-09-30)
+
+**FACT (2026-09-30):** Rows are training source languages; columns are evaluation target languages. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families.word.holdout.matrix`).
+
+| Source → target | en | es | de | zh | hi | mr |
+|---|---|---|---|---|---|---|
+| en | 49.83 [46.53, 54.07] | 50.19 [43.21, 56.67] | 49.75 [44.11, 56.97] | 50.07 [48.80, 51.82] | 50.64 [49.46, 51.97] | 50.69 [50.02, 51.35] |
+| es | 50.55 [47.14, 53.90] | 51.01 [47.79, 54.81] | 50.41 [43.91, 58.30] | 50.24 [49.37, 51.42] | 50.67 [49.78, 51.66] | 50.59 [50.19, 51.09] |
+| de | 45.47 [39.05, 53.96] | 52.49 [45.95, 59.18] | 50.55 [47.25, 54.71] | 34.61 [26.19, 47.39] | 35.05 [26.93, 47.29] | 33.60 [24.87, 46.82] |
+| zh | 46.35 [39.32, 55.99] | 49.55 [45.60, 53.94] | 47.34 [40.03, 55.91] | 51.36 [48.16, 54.66] | 48.47 [40.84, 57.52] | 47.37 [39.41, 56.87] |
+| hi | 48.41 [45.58, 52.30] | 50.37 [49.63, 51.06] | 49.30 [41.24, 58.67] | 49.76 [48.60, 51.29] | 53.38 [50.59, 56.76] | 51.75 [48.87, 54.14] |
+| mr | 44.10 [36.44, 54.61] | 42.72 [35.12, 51.15] | 45.47 [40.84, 50.69] | 41.74 [31.52, 53.69] | 47.29 [43.56, 52.47] | 53.20 [49.87, 56.79] |
+
+#### Surface control: held-out source–target matrix (2026-09-30)
+
+**FACT (2026-09-30):** Rows are training source languages; columns are evaluation target languages. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families.surface.holdout.matrix`).
+
+| Source → target | en | es | de | zh | hi | mr |
+|---|---|---|---|---|---|---|
+| en | 45.98 [37.89, 55.25] | 44.28 [35.40, 54.47] | 46.94 [43.93, 50.49] | 39.69 [33.42, 47.62] | 52.65 [50.67, 54.69] | 47.80 [44.43, 51.44] |
+| es | 45.32 [37.84, 54.04] | 45.37 [37.19, 55.21] | 49.22 [45.56, 53.45] | 49.53 [48.03, 50.69] | 49.73 [46.70, 53.56] | 48.18 [45.07, 52.14] |
+| de | 49.36 [42.31, 56.70] | 49.46 [42.62, 56.89] | 45.81 [36.70, 57.54] | 42.47 [33.59, 53.79] | 52.07 [50.50, 53.90] | 44.31 [35.48, 55.10] |
+| zh | 44.85 [39.98, 49.83] | 45.92 [42.62, 49.97] | 45.00 [39.56, 51.79] | 44.97 [37.57, 54.71] | 50.42 [48.10, 52.81] | 43.20 [37.59, 51.12] |
+| hi | 53.24 [51.06, 55.40] | 52.97 [50.68, 55.20] | 53.05 [49.97, 56.07] | 42.28 [33.29, 53.19] | 49.23 [39.81, 60.52] | 53.17 [50.84, 55.35] |
+| mr | 46.47 [38.35, 57.12] | 47.92 [39.63, 58.09] | 44.90 [35.19, 57.26] | 49.56 [48.91, 50.44] | 52.12 [50.84, 53.76] | 44.85 [35.17, 56.95] |
+
+#### Held-out cell means (2026-09-30)
+
+**FACT (2026-09-30):** Values are balanced accuracy (%) [pointwise 95% interval]. Means equally weight 36 cells, six same-language cells, or 30 cross-language cells. The matched development cohort contains 4,901 different statements from the same 58 documents, with label counts 2,402 / 2,499. Its predictions are recomputed from primary rows; the original 66-document development matrices retained in the JSON are context only and are not this cohort. The subtraction uses paired manifesto weights across the two cohorts. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method.matched_development_items`, `matched_development_class_counts`, `families.*.holdout`, `full_66_manifesto_development_context_only`).
+
+| Family | All 36 cells | Same-language: 6 cells | Cross-language: 30 cells |
+|---|---|---|---|
+| OLMo | 50.39 [49.04, 51.98] | 54.36 [52.61, 55.94] | 49.59 [48.21, 51.34] |
+| Qwen3.5 | 53.70 [52.39, 55.35] | 55.88 [53.70, 57.82] | 53.26 [51.91, 55.07] |
+| Ministral | 53.48 [52.06, 54.68] | 56.75 [54.24, 58.98] | 52.82 [51.50, 53.98] |
+| Gemma | 57.76 [55.94, 59.32] | 59.56 [57.42, 61.51] | 57.40 [55.58, 58.93] |
+| Character control | 49.17 [47.09, 51.92] | 51.59 [49.02, 54.29] | 48.68 [46.55, 51.57] |
+| Word control | 47.90 [44.69, 52.28] | 51.55 [49.02, 54.59] | 47.17 [43.67, 52.03] |
+| Surface control | 47.56 [43.48, 52.74] | 46.04 [37.57, 56.47] | 47.87 [44.63, 52.05] |
+
+#### Development cell means on the same 58 documents (2026-09-30)
+
+**FACT (2026-09-30):** Values are balanced accuracy (%) [pointwise 95% interval]. Means equally weight 36 cells, six same-language cells, or 30 cross-language cells. The matched development cohort contains 4,901 different statements from the same 58 documents, with label counts 2,402 / 2,499. Its predictions are recomputed from primary rows; the original 66-document development matrices retained in the JSON are context only and are not this cohort. The subtraction uses paired manifesto weights across the two cohorts. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method.matched_development_items`, `matched_development_class_counts`, `families.*.matched_development`, `full_66_manifesto_development_context_only`).
+
+| Family | All 36 cells | Same-language: 6 cells | Cross-language: 30 cells |
+|---|---|---|---|
+| OLMo | 53.96 [53.32, 54.64] | 58.93 [57.90, 60.05] | 52.97 [52.36, 53.59] |
+| Qwen3.5 | 58.64 [57.71, 59.56] | 65.99 [64.93, 67.09] | 57.17 [56.19, 58.17] |
+| Ministral | 59.47 [58.70, 60.21] | 69.81 [68.41, 71.18] | 57.40 [56.69, 58.10] |
+| Gemma | 65.02 [64.02, 66.02] | 69.31 [68.26, 70.35] | 64.16 [63.13, 65.18] |
+| Character control | 54.43 [53.46, 55.42] | 67.37 [65.81, 68.90] | 51.85 [50.87, 52.86] |
+| Word control | 52.57 [50.61, 54.60] | 65.70 [64.12, 67.36] | 49.94 [47.75, 52.29] |
+| Surface control | 48.66 [46.91, 50.71] | 47.38 [44.52, 50.74] | 48.91 [47.37, 50.73] |
+
+#### Held-out minus matched-development cell means (2026-09-30)
+
+**FACT (2026-09-30):** Values are percentage points [pointwise 95% interval]. Means equally weight 36 cells, six same-language cells, or 30 cross-language cells. The matched development cohort contains 4,901 different statements from the same 58 documents, with label counts 2,402 / 2,499. Its predictions are recomputed from primary rows; the original 66-document development matrices retained in the JSON are context only and are not this cohort. The subtraction uses paired manifesto weights across the two cohorts. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method.matched_development_items`, `matched_development_class_counts`, `families.*.holdout_minus_matched_development_pp`, `full_66_manifesto_development_context_only`).
+
+| Family | All 36 cells | Same-language: 6 cells | Cross-language: 30 cells |
+|---|---|---|---|
+| OLMo | -3.57 [-5.02, -2.07] | -4.57 [-6.61, -2.88] | -3.37 [-4.82, -1.73] |
+| Qwen3.5 | -4.94 [-6.18, -3.44] | -10.11 [-12.48, -7.90] | -3.91 [-5.09, -2.32] |
+| Ministral | -5.99 [-7.69, -4.50] | -13.06 [-16.02, -10.42] | -4.58 [-6.14, -3.23] |
+| Gemma | -7.26 [-9.12, -5.59] | -9.75 [-11.86, -7.84] | -6.76 [-8.63, -5.08] |
+| Character control | -5.27 [-7.26, -2.61] | -15.79 [-18.51, -13.10] | -3.16 [-5.23, -0.37] |
+| Word control | -4.67 [-7.55, -0.87] | -14.14 [-16.65, -11.26] | -2.77 [-5.96, 1.35] |
+| Surface control | -1.09 [-4.77, 3.69] | -1.35 [-8.91, 8.41] | -1.04 [-3.99, 2.80] |
+
+#### Paired probe-minus-control cross-language differences (2026-09-30)
+
+**FACT (2026-09-30):** Each difference subtracts the control mean from the probe mean over the 30 held-out cross-language cells, within each shared manifesto draw. Values are percentage points [pointwise 95% interval]. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`probe_minus_control.*.off_diagonal_mean`).
+
+| Probe minus control | Cross-language mean difference |
+|---|---|
+| OLMo minus char | 0.91 [-1.20, 2.58] |
+| OLMo minus word | 2.43 [-1.17, 5.34] |
+| OLMo minus surface | 1.72 [-1.56, 4.63] |
+| Qwen3.5 minus char | 4.58 [2.43, 6.21] |
+| Qwen3.5 minus word | 6.10 [1.50, 9.55] |
+| Qwen3.5 minus surface | 5.40 [1.90, 8.04] |
+| Ministral minus char | 4.14 [0.59, 6.85] |
+| Ministral minus word | 5.65 [0.62, 9.50] |
+| Ministral minus surface | 4.95 [0.26, 8.72] |
+| Gemma minus char | 8.72 [4.79, 11.76] |
+| Gemma minus word | 10.23 [4.55, 14.57] |
+| Gemma minus surface | 9.53 [4.50, 13.61] |
+
+**LIMITATION (2026-09-30):** These tables report the category-derived-label measurements and their descriptive differences. The matched-document cohorts contain different statements/categories; the differences do not estimate a paired same-statement or causal effect. Intervals condition on saved layers, classifiers, and splits, exclude retraining uncertainty, and are pointwise rather than simultaneous or multiplicity-adjusted. No sentence-ideology, party-independence, model-ranking, or wider category-population claim is made from these four fixed categories. Source: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method.interval`, `conditional_on`, `difference`, `limitations`); frozen protocol in §16.
+
+#### Exact models, runtime, and verification (2026-09-30)
+
+**FACT (2026-09-30):** All four model runs used their exact pinned revisions, recorded extraction batch size 8, raw final-token hidden states stored as float16 and cast to float32 for scoring, and the existing tokenizer settings. This Qwen model is Qwen3.5. Each smoke and full run checked eight original-order development items across 36 language pairs (288 checks): guesses matched exactly and maximum absolute margin error was 0.0; the unchanged tolerances were `atol=0.001`, `rtol=0.0001`. Sources: [OLMo full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/OLMo/summary.json); [Qwen3.5 full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Qwen3.5/summary.json); [Ministral full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Ministral/summary.json); [Gemma full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Gemma/summary.json); [OLMo smoke summary](../../../gcp-workspace/rile_v2_category_holdout/smoke-batch8-20260930-luna/OLMo/summary.json); [Qwen3.5 smoke summary](../../../gcp-workspace/rile_v2_category_holdout/smoke-batch8-20260930-luna/Qwen3.5/summary.json); [Ministral smoke summary](../../../gcp-workspace/rile_v2_category_holdout/smoke-batch8-20260930-luna/Ministral/summary.json); [Gemma smoke summary](../../../gcp-workspace/rile_v2_category_holdout/smoke-batch8-20260930-luna/Gemma/summary.json) (`model`, `model_revision`, `batch_size`, `feature`, `dev_parity`).
+
+| Family | Exact model | Revision | Smoke seconds | Full seconds |
+|---|---|---|---|---|
+| OLMo | `allenai/Olmo-3-7B-Instruct` | `6e5971d9eba42665f5bd5a0fcf047f299ce1dccc` | 108.48 | 412.14 |
+| Qwen3.5 | `Qwen/Qwen3.5-9B` | `c202236235762e1c871ad0ccb60c8ee5ba337b9a` | 131.89 | 469.57 |
+| Ministral | `mistralai/Ministral-8B-Instruct-2410` | `2f494a194c5b980dfb9772cb92d26cbb671fce5a` | 116.49 | 313.55 |
+| Gemma | `google/gemma-2-9b-it` | `11c9b309abf73637e4b6f9a3fa1e92e615547819` | 132.82 | 344.51 |
+
+**FACT (2026-09-30):** The corrected driver interval was 34 minutes 19 seconds: 2026-10-01 00:09:48–00:44:07 UTC, corresponding to 2026-09-30 17:09:48–17:44:07 Pacific daylight time. It covers the corrected smoke/full sequence and wrapper overhead. Model runtimes above come from individual summaries. The local seven-family bootstrap took 6.81 seconds. Sources: [corrected driver status](../../../gcp-workspace/rile_v2_category_holdout/diagnostic-batch8-20261001-luna/driver_status_batch8_v4.tsv); [OLMo full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/OLMo/summary.json); [Qwen3.5 full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Qwen3.5/summary.json); [Ministral full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Ministral/summary.json); [Gemma full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Gemma/summary.json); [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`elapsed_seconds`).
+
+**LIMITATION (2026-09-30):** Driver duration is not total VM running time or a cost measurement. Total VM uptime and incurred cost for this sequence are not established by the evaluation artifacts. Source: driver-status scope and the run-summary timing fields cited above.
+
+**FACT (2026-09-30):** The model environment recorded Python 3.10.12, NumPy 2.2.6, PyTorch 2.13.0+cu130, Transformers 5.14.1, and bfloat16 execution. The CPU bootstrap recorded Python 3.12.7 and NumPy 2.5.3. Saved summary/prediction hashes, frozen parameter hashes, and original selection-summary hashes are retained in the model summaries and bootstrap provenance. Sources: [OLMo full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/OLMo/summary.json); [Qwen3.5 full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Qwen3.5/summary.json); [Ministral full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Ministral/summary.json); [Gemma full summary](../../../gcp-workspace/rile_v2_category_holdout/full-batch8-20260930-luna/Gemma/summary.json); [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`runtime`, `provenance`).
+
+**FACT (2026-09-30):** The analysis checked all 252 held-out cell point estimates and all 252 original full-development cell point estimates against summaries to tolerance 1e-12; it separately recomputed development on the matched 58 documents. It validated item/document/fold/label alignment, saved selected layers, and prediction hashes before resampling. The following source/helper and shared-weight hashes are recorded. Sources: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`method.point_checks`, `weights_sha256`, `code_sha256`, `helper_sha256`, `provenance`); [analysis runner](../src/bootstrap_rile_category_holdout.py).
+
+| Provenance field | SHA-256 |
+|---|---|
+| Evaluator | `bb366b23cdf72002e3eae8eb7d7006536016ec4bf9dbd72a823651979451f9d0` |
+| Feature-extraction helper | `c125bdc1ee6fee74dcc1858ccf9f0cd79843058f1b50e59bc774a103530beaa8` |
+| Bootstrap runner | `f975c97b062e43cfd392526ccb01e7db55e86c833233dc5303b101c20b642119` |
+| Bootstrap transfer helper | `6ed5068458cf0689ed0ee69b366d3762d8ca5169a9957c2f11fd41470d5e759b` |
+| Shared bootstrap weights | `79c7a1c5c773416669b04732012c80baf59c80e055ebfb843a272a6a94e24341` |
+
+**FACT (2026-09-30):** All seven full matrices, source/target means, cellwise cohort differences, and probe-minus-control differences are retained in the numerical artifact. Sources: [complete bootstrap JSON](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/bootstrap_results.json) (`families`, `probe_minus_control`); [complete HTML matrices](../../../gcp-workspace/rile_v2_category_holdout/bootstrap-batch8-20260930-luna/tables.html). Earlier failed diagnostics were preserved; recorded issue closures are in [bugs-squashed](../../../docs/bugs-squashed.md).
